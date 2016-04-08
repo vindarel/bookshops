@@ -73,7 +73,7 @@ class Scraper(baseScraper):
 
         Return: a str, the necessary url part to add at the end.
         """
-        if self.page == 1:
+        if self.page == 1 or self.page == u"1" or self.page == "1":
             return ""
 
         page_qparam = u""
@@ -90,9 +90,9 @@ class Scraper(baseScraper):
     def _product_list(self):
         # The table doesn't have its css classes 'even' and 'odd' yet.
         plist = self.soup.find(class_='tab_listlivre')
-        plist = plist.find_all('tr')
         if not plist:
             logging.info(u'Warning: product list is null, we (apparently) didn\'t find any result')
+        plist = plist.find_all('tr')
         return plist
 
     @catch_errors
