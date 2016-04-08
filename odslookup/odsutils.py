@@ -130,7 +130,7 @@ def removeDuplicates(data):
     """Remove rows with same title AND same author(s) AND same
     publisher(s).
 
-    Take the row with a "category" if any (that row is supposed to come last).
+    Take the row with a "shelf" if any (that row is supposed to come last).
 
     """
     res = []
@@ -145,7 +145,7 @@ def removeDuplicates(data):
             res.append(dic)
             seen.add(copy)
         else:
-            if dic.get('category'):
+            if dic.get('shelf'):
                 res.pop() # warning rows are supposed to be ordered
                 res.append(dic)
 

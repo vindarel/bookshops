@@ -249,8 +249,8 @@ def addRowInfo(card, row):
         else:
             card['distributor'] = row.get('publisher')
 
-    if row.get('category'):
-        card['category'] = row.get('category')
+    if row.get('shelf'):
+        card['shelf'] = row.get('shelf')
 
     return card
 
