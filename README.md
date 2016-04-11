@@ -1,5 +1,5 @@
 
-# Datasources: Web scraping to get book informations
+# Web scraping to get book informations
 
 This library is to get book informations. We can search with **keywords**,
 with the **isbn**, with an **advanced search**, and do **pagination**.
@@ -11,6 +11,21 @@ We get the data from existing websites. We scrape:
 - for Germany: *the site went down !* This is the danger of webscraping.
 
 we get: the title and authors, the price, the publisher(s), the cover, etc
+
+## Import data from an ods or csv file
+
+If your file has an 'isbn' and a 'quantity' column, it's easy, we will
+find all the book information.
+
+If it has the title and the publisher, it's doable but error prone. We
+can still do it, but you shall do an inventory of your stock
+afterwards.
+
+See the ``odsimport`` module. It gives back a json. It's your
+responsibility to add what you want in your database (this is done in
+Abelujo).
+
+Usable, but work in progress.
 
 ## Why not Amazon ?
 
