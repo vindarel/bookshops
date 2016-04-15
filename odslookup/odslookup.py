@@ -40,8 +40,8 @@ import ods2csv2py
 from odsutils import toInt
 from odsutils import replaceAccentsInStr
 from odsutils import rmPunctuation
-from frFR.decitre.decitreScraper import Scraper
-from frFR.decitre.decitreScraper import postSearch
+from frFR.librairiedeparis.librairiedeparisScraper import Scraper
+from frFR.librairiedeparis.librairiedeparisScraper import postSearch
 
 """Workflow is as follow:
 - get the list of rows from the ods file (with ods2csv2py). The row titles must not contain non-utf8 characters.
@@ -280,7 +280,7 @@ def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=sear
             return cards['cards_found'], cards['cards_no_isbn'], cards['cards_not_found']
 
     for i, row in tqdm(enumerate(odsdata)):
-        if "ISBN" in row:
+        if "ISBN" in row and row['ISBN']:
             search_terms = row['ISBN']
             row['isbn_search'] = True
         else:
