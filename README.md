@@ -12,6 +12,8 @@ We get the data from existing websites. We scrape:
 
 we get: the title and authors, the price, the publisher(s), the cover, etc
 
+<img src="cli-search.png"</img>
+
 ## Import data from an ods or csv file
 
 If your file has an 'isbn' and a 'quantity' column, it's easy, we will
@@ -74,23 +76,7 @@ To try it out, go to a scraper directory:
     cd frFR/librairiedeparis/
     python librairiedeparisScraper.py 9782918059363
 
-and you get
-
-```
-Nb results: 1
-{'authors': [u'Collectif'],
- 'card_type': u'book',
- 'data_source': 'librairiedeparis',
- 'details_url': u'http://www.librairie-de-paris.fr/9782805920677-critiquer-foucault-collectif/',
- 'img': 'http://images.titelive.com/677/9782805920677_1_m.jpg',
- 'isbn': u'9782805920677',
- 'price': 20.0,
- 'publishers': [u'Aden Belgique'],
- 'search_terms': '9782805920677',
- 'search_url': u'http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=simple&LIVREANCIEN=2&MOTS=9782805920677&x=0&y=0',
- 'summary': None,
- 'title': u'Critiquer Foucault'}
-```
+and you get the above screenshot.
 
 ## Advanced search
 

@@ -14,6 +14,7 @@ import requests_cache
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
+from termcolor import colored
 
 logging.basicConfig(level=logging.INFO) #to manage with ruche
 requests_cache.install_cache()
@@ -25,12 +26,13 @@ cdp, _ = os.path.split(common_dir)
 cdpp, _ = os.path.split(cdp)
 cdppp, _ = os.path.split(cdpp)
 sys.path.append(cdppp)
+
 from datasources.utils.baseScraper import Scraper as baseScraper
+from datasources.utils.decorators import catch_errors
 from datasources.utils.scraperUtils import is_isbn
 from datasources.utils.scraperUtils import isbn_cleanup
 from datasources.utils.scraperUtils import priceFromText
 from datasources.utils.scraperUtils import priceStr2Float
-from datasources.utils.decorators import catch_errors
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -246,6 +248,19 @@ def postSearch(card, isbn=None):
     """
     return card
 
+def print_card(card):
+    """Pretty output for the console.
+    """
+    card = addict.Dict(card)
+    COL_WIDTH = 30
+    TRUNCATE  = 19
+    print colored(" " + card.title, "blue")
+    # Great formatting guide: https://pyformat.info/ :)
+    print u"   {:{}.{}} {:>{}.{}} {:5} €   {}".\
+        format(", ".join(card.authors), COL_WIDTH, TRUNCATE,
+               ", ".join(card.publishers), COL_WIDTH, TRUNCATE,
+               card.price,
+               card.isbn)
 
 @annotate(words=clize.Parameter.REQUIRED)
 @kwoargs()
@@ -256,13 +271,11 @@ def main(*words):
     if not words:
         print "Please give keywords as arguments"
         return
-    import pprint
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print "Nb results: {}".format(len(bklist))
+    print " Nb results: {}".format(len(bklist))
     bklist = [postSearch(it) for it in bklist]
-    print "cards after postSearch:"
-    map(pprint.pprint, bklist)
+    map(print_card, bklist)
 
 if __name__ == '__main__':
     clize.run(main)
