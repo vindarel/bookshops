@@ -60,7 +60,7 @@ class Scraper(baseScraper):
         self.PUBLISHER_QPARAM = u"EDITEUR"
         #: Number of results to display
         self.NBR_RESULTS_QPARAM = u"NOMBRE"
-        self.NBR_RESULTS = 24 # 12 by default
+        self.NBR_RESULTS = 12
 
     def __init__(self, *args, **kwargs):
         """
@@ -83,7 +83,7 @@ class Scraper(baseScraper):
             page_qparam = u"&{}={}&{}={}".format(self.NBR_RESULTS_QPARAM,
                                                  self.NBR_RESULTS,
                                                  "DEBUT",
-                                                 self.NBR_RESULTS * self.page)
+                                                 self.NBR_RESULTS * (self.page - 1))
 
         return page_qparam
 
