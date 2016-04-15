@@ -21,7 +21,6 @@ import distance
 import json
 import logging
 import os
-import string
 import sys
 import time
 
@@ -40,6 +39,7 @@ sys.path.append(cdp)
 import ods2csv2py
 from odsutils import toInt
 from odsutils import replaceAccentsInStr
+from odsutils import rmPunctuation
 from frFR.decitre.decitreScraper import Scraper
 from frFR.decitre.decitreScraper import postSearch
 
@@ -126,19 +126,6 @@ def is_substr(find, data):
         if find not in data[i]:
             return False
     return True
-
-def rmPunctuation(it):
-    """Remove all punctuation from the string.
-
-    return: str
-    """
-    # https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
-    # ret = it.translate(None, string.punctuation) # faster, not with unicode
-    if not it:
-        return it
-    exclude = set(string.punctuation)
-    st = ''.join(ch for ch in it if ch not in exclude)
-    return st
 
 
 def cardCorresponds(card, odsrow):
@@ -255,7 +242,7 @@ def addRowInfo(card, row):
     return card
 
 def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=search_on_scraper,
-                level="DEBUG", odsfile=""):
+                level="DEBUG", srcfile=""):
     """
     Look for the desired cards on remote datasources.
 
@@ -281,7 +268,7 @@ def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=sear
     start = datetime.now()
 
     # Get the json "cache", if any.
-    basename, ext = os.path.splitext(os.path.basename(odsfile))
+    basename, ext = os.path.splitext(os.path.basename(srcfile))
     debugfile = basename + ".json"
     if os.path.isfile(debugfile):
         with open(debugfile, "r") as f:
@@ -338,7 +325,7 @@ def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=sear
     print "Search on {} lasted: {}".format(datasource, ended - start)
     return (cards_found, cards_no_isbn, cards_not_found)
 
-def run(odsfile, datasource, timeout=TIMEOUT, nofieldsrow=False):
+def run(srcfile, datasource, timeout=TIMEOUT, nofieldsrow=False):
     cards_found = cards_no_isbn = cards_not_found = None
     to_ret = {"found": cards_found, "no_isbn": None, "not_found": None,
               "odsdata": None,
@@ -347,7 +334,7 @@ def run(odsfile, datasource, timeout=TIMEOUT, nofieldsrow=False):
     odsdata = {}
 
     # Read the data.
-    odsdata = ods2csv2py.run(odsfile, nofieldsrow=nofieldsrow)
+    odsdata = ods2csv2py.run(srcfile, nofieldsrow=nofieldsrow)
 
     if not odsdata:
         exit(1)
@@ -360,14 +347,14 @@ def run(odsfile, datasource, timeout=TIMEOUT, nofieldsrow=False):
     # Look up for cards on our datasource
     cards_found, cards_no_isbn, cards_not_found = lookupCards(odsdata.get("data"),
                                                              datasource=datasource, timeout=timeout,
-                                                             odsfile=odsfile)
+                                                             srcfile=srcfile)
 
     if not sum([len(cards_found), len(cards_not_found), len(cards_no_isbn)]) == len(odsdata):
         log.warning("The sum of everything doesn't match ;)")
     # TODO: make a list to confront the result to the ods value.
     log.debug("\nThe following cards will be added to the database: %i results\n" % (len(cards_found),))
 
-    basename, ext = os.path.splitext(os.path.basename(odsfile))
+    basename, ext = os.path.splitext(os.path.basename(srcfile))
     jsonfile = basename + ".json"
     with open(jsonfile, "wb") as f:
         towrite = {"cards_found": cards_found,

@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
-from unidecode import unidecode
+import string as string_mod
+
 from toolz import itemmap
 from toolz import keymap
+from unidecode import unidecode
 
 
 def cleanText(tag):
@@ -150,6 +152,19 @@ def removeDuplicates(data):
                 res.append(dic)
 
     return res
+
+def rmPunctuation(it):
+    """Remove all punctuation from the string.
+
+    return: str
+    """
+    # https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
+    # ret = it.translate(None, string.punctuation) # faster, not with unicode
+    if not it:
+        return it
+    exclude = set(string_mod.punctuation)
+    st = ''.join(ch for ch in it if ch not in exclude)
+    return st
 
 def replaceAccentsInStr(string):
     """Replace non printable utf-8 characters with their printable

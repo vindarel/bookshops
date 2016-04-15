@@ -27,6 +27,20 @@ Abelujo).
 
 Usable, but work in progress.
 
+### Accepted format and columns
+
+We can read ods and csv files.
+
+- a file with an "isbn" and "quantity" column,
+- a file with columns "title", "publisher", "isbn" (optionnal in this
+  case), "shelf", "distributor", "quantity". There is **no** "price"
+  column. "authors" is optionnal (it can help to fetch the correct
+  book).
+
+If the file has no headers, use the "odsettings.py" configuration file
+(in particular, to set the csv delimiter, either "," or ";").
+
+
 ## Why not Amazon ?
 
 Amazon kills the book industry and its employees.  But moreover, with
@@ -39,7 +53,8 @@ It has very few data.
 
 ## Why not the BNF (Bibliothèque Nationale de France) ?
 
-Because, for bookshops, we need the price and recent books.
+Because, for bookshops, we need recent books (the BNF takes a few
+months), up to date information. There isn't a lot of tools either.
 
 
 # Install

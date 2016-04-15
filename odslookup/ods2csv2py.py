@@ -19,7 +19,7 @@
 import csv
 from unidecode import unidecode
 import logging
-import os
+from os.path import exists, expanduser, splitext, isfile
 import sys
 from subprocess import call
 from toolz import valmap
@@ -67,15 +67,19 @@ log = logging.getLogger(__name__)
 def convert2csv(odsfile):
     """Convert an ods file (LibreOffice Calc) to csv.
     """
+    ext = splitext(odsfile)[-1]
+    if ext == ".csv":
+        return odsfile
+
     cmd = ["soffice", "--headless", "--convert-to", "csv"]
     cmd.append(odsfile)
     ret = call(cmd)
     if ret == 0:
-        return os.path.splitext(odsfile)[0] + ".csv"
+        return splitext(odsfile)[0] + ".csv"
     else:
         return None
 
-def fieldNames(csvfile):
+def fieldNames(csvfile, delimiter=";"):
     """Return the field names of the file.
     They may not be at the first row.
 
@@ -94,12 +98,12 @@ def fieldNames(csvfile):
     for i, line in enumerate(data):
         if "TITLE" in line.upper() or "TITRE" in line.upper():
             orig_fieldnames = line
-            fieldnames = [translateHeader(orig_fieldnames.split(",")[ind]) for ind in range(len(orig_fieldnames.split(",")))]
+            fieldnames = [translateHeader(orig_fieldnames.split(delimiter)[ind]) for ind in range(len(orig_fieldnames.split(delimiter)))]
             fieldnames = map(lambda x: x.upper(), fieldnames)
             return orig_fieldnames, fieldnames
 
     # No field names ? Read a config file.
-    if os.path.isfile(settings):
+    if isfile(settings):
         try:
             from odssettings import fields
             fields = map(lambda x: x.upper(), fields)
@@ -144,7 +148,7 @@ def extractCardData(csvfile, lang="frFR", nofieldsrow=False, delimiter=";"):
 
     # data = filter(lambda line: len(line) != len(fieldnames), data)
     reader = csv.DictReader(open(csvfile, "r"),
-                            fieldnames=orig_fieldnames.split(","),
+                            fieldnames=orig_fieldnames.split(delimiter),
                             delimiter=delimiter)
 
     # skip the lines untill we find the fieldnames one.
@@ -172,8 +176,8 @@ def run(odsfile, nofieldsrow=False):
     """
     csvdata = []
     csvfile = convert2csv(odsfile)
-    if os.path.exists(csvfile):
-        csvdata = extractCardData(csvfile, nofieldsrow=nofieldsrow)
+    if exists(expanduser(csvfile)):
+        csvdata = extractCardData(expanduser(csvfile), nofieldsrow=nofieldsrow)
         if csvdata["data"]:
             # print "found data:", csvdata["data"]
             print "results found in CSV: ", len(csvdata["data"])
