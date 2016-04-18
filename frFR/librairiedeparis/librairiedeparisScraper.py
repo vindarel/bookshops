@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
 import logging
 import os
 import re
@@ -9,12 +8,9 @@ import sys
 
 import addict
 import clize
-import requests
 import requests_cache
-from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
-from termcolor import colored
 
 logging.basicConfig(level=logging.INFO) #to manage with ruche
 requests_cache.install_cache()
@@ -33,6 +29,7 @@ from datasources.utils.scraperUtils import is_isbn
 from datasources.utils.scraperUtils import isbn_cleanup
 from datasources.utils.scraperUtils import priceFromText
 from datasources.utils.scraperUtils import priceStr2Float
+from datasources.utils.scraperUtils import print_card
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -93,7 +90,7 @@ class Scraper(baseScraper):
         # The table doesn't have its css classes 'even' and 'odd' yet.
         plist = self.soup.find(class_='tab_listlivre')
         if not plist:
-            logging.info(u'Warning: product list is null, we (apparently) didn\'t find any result')
+            logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
         plist = plist.find_all('tr')
         return plist
 
@@ -248,20 +245,6 @@ def postSearch(card, isbn=None):
     """
     return card
 
-def print_card(card):
-    """Pretty output for the console.
-    """
-    card = addict.Dict(card)
-    COL_WIDTH = 30
-    TRUNCATE  = 19
-    print colored(" " + card.title, "blue")
-    # Great formatting guide: https://pyformat.info/ :)
-    print u"   {:{}.{}} {:>{}.{}} {:5} €   {}".\
-        format(", ".join(card.authors), COL_WIDTH, TRUNCATE,
-               ", ".join(card.publishers), COL_WIDTH, TRUNCATE,
-               card.price,
-               card.isbn)
-
 @annotate(words=clize.Parameter.REQUIRED)
 @kwoargs()
 def main(*words):
@@ -276,6 +259,9 @@ def main(*words):
     print " Nb results: {}".format(len(bklist))
     bklist = [postSearch(it) for it in bklist]
     map(print_card, bklist)
+
+def run():
+    exit(clize.run(main))
 
 if __name__ == '__main__':
     clize.run(main)

@@ -20,6 +20,9 @@
 import re
 import string
 
+import addict
+from termcolor import colored
+
 
 def priceFromText(text):
     """Extract the price from text with regexp.
@@ -75,3 +78,17 @@ def is_isbn(it):
         res = True
 
     return res
+
+def print_card(card):
+    """Pretty output for the console.
+    """
+    card = addict.Dict(card)
+    COL_WIDTH = 30
+    TRUNCATE  = 19
+    print colored(" " + card.title, "blue")
+    # Great formatting guide: https://pyformat.info/ :)
+    print u"   {:{}.{}} {:>{}.{}} {:5} €   {}".\
+        format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
+               ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
+               card.price,
+               card.isbn)

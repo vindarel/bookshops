@@ -30,6 +30,12 @@ import requests
 import requests_cache
 import sys
 
+import addict
+import clize
+import requests_cache
+from sigtools.modifiers import annotate
+from sigtools.modifiers import kwoargs
+
 # Add "datasources" to sys.path (independant from Django project,
 # to clean up for own module).
 common_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,6 +48,7 @@ from datasources.utils.baseScraper import postSearch
 from datasources.utils.scraperUtils import isbn_cleanup
 from datasources.utils.scraperUtils import priceFromText
 from datasources.utils.scraperUtils import priceStr2Float
+from datasources.utils.scraperUtils import print_card
 from datasources.utils.decorators import catch_errors
 
 requests_cache.install_cache()
@@ -60,6 +67,7 @@ class Scraper(baseScraper):
         #: Url to which we just have to add url parameters to run the search
         self.SOURCE_URL_SEARCH = u"http://www.casadellibro.com/busqueda-generica?busqueda="
         self.SOURCE_URL_ADVANCED_SEARCH = self.SOURCE_URL_SEARCH
+        self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
         self.TYPE_BOOK = "book"
         self.URL_END = u"&idtipoproducto=-1&tipoproducto=1&nivel=5"
@@ -156,12 +164,23 @@ def postSearch(card):
 
     return card
 
-if __name__=="__main__":
-    import pprint
-    scrap = Scraper("emma", "goldman")
+@annotate(words=clize.Parameter.REQUIRED)
+@kwoargs()
+def main(*words):
+    """
+    words: keywords to search (or isbn/ean)
+    """
+    if not words:
+        print "Please give keywords as arguments"
+        return
+    scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    map(pprint.pprint, bklist)
-    print "Nb results: {}".format(len(bklist))
-    print "1st book postSearch:"
-    post = postSearch(bklist[0])
-    print post
+    print " Nb results: {}".format(len(bklist))
+    bklist = [postSearch(it) for it in bklist]
+    map(print_card, bklist)
+
+def run():
+    exit(clize.run(main))
+
+if __name__ == '__main__':
+    clize.run(main)
