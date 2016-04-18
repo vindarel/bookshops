@@ -16,3 +16,9 @@ casadellibro:
 	@cd esES/casadellibro/ && python test_end2end.py
 
 testscrapers: decitre casadellibro librairiedeparis
+
+build:
+	# build a source distribution
+	python setup.py sdist
+	# build a pure python wheel (built package)
+	python setup.py bdist_wheel

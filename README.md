@@ -93,6 +93,17 @@ We do pagination.
 
 See http://dev.abelujo.cc/webscraping.html
 
+Development mode:
+
+    pip install -e .
+
+Now you can edit the project and run the development version like the
+lib is meant to be run, i.e. with the `entry_points`: `livres`,
+`libros`, etc. 
+
+doc: https://python-packaging-user-guide.readthedocs.org/en/latest/distributing/#working-in-development-mode
+
+
 # Bugs and shortcomings
 
 This is webscraping, so it doesn't go without pitfalls:
@@ -101,3 +112,7 @@ This is webscraping, so it doesn't go without pitfalls:
 - the site can change, it which case we would have to change our
   sraper too. This can be catched early with automated and frequent
   tests (work ongoing).
+
+# Licence
+
+LGPLv3
