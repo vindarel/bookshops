@@ -44,8 +44,8 @@ setup(
 
     entry_points = {
         "console_scripts": [
-            "livres = frFR.librairiedeparis.librairiedeparisScraper:run",
-            "libros = esES.casadellibro.casadellibroScraper:run",
+            "livres = bookshops.frFR.librairiedeparis.librairiedeparisScraper:run",
+            "libros = bookshops.esES.casadellibro.casadellibroScraper:run",
         ],
     },
 

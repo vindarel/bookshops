@@ -33,13 +33,12 @@ from bs4 import BeautifulSoup
 common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
 cdpp, _ = os.path.split(cdp)
-cdppp, _ = os.path.split(cdpp)
-sys.path.append(cdppp)
-from datasources.utils.scraperUtils import is_isbn
-from datasources.utils.scraperUtils import isbn_cleanup
-from datasources.utils.scraperUtils import priceFromText
-from datasources.utils.scraperUtils import priceStr2Float
-from datasources.utils.decorators import catch_errors
+sys.path.append(cdpp)
+from bookshops.utils.scraperUtils import is_isbn
+from bookshops.utils.scraperUtils import isbn_cleanup
+from bookshops.utils.scraperUtils import priceFromText
+from bookshops.utils.scraperUtils import priceStr2Float
+from bookshops.utils.decorators import catch_errors
 
 requests_cache.install_cache()
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
@@ -201,7 +200,8 @@ class Scraper(object):
 
                 self.url += self.URL_END + self.pagination()
 
-        log.info('search url: %s' % self.url)
+        log.warning('search url: %s' % self.url)
+        # requests_cache.disabled()
         self.req = requests.get(self.url)
         self.soup = BeautifulSoup(self.req.content, "lxml")
 

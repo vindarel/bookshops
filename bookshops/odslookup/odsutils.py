@@ -177,5 +177,12 @@ def replaceAccentsInStr(string):
     cf https://docs.python.org/2/library/csv.html
 
     """
-    string = string.strip('?') # do also some cleanup: see rmPunctuation
-    return unidecode(string)
+    it = string.strip('?') # do also some cleanup: see rmPunctuation
+    it = rmPunctuation(it)
+    try:
+        it = unidecode(it)
+    except Exception as e:
+        print "Error while unidecoding string {}: {}".format(it, e)
+        return it
+
+    return it

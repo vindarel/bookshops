@@ -55,12 +55,11 @@ import json
 common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
 cdpp, _ = os.path.split(cdp)
-cdppp, _ = os.path.split(cdpp)
-sys.path.append(cdppp)
+sys.path.append(cdpp)
 
-from datasources.utils.scraperUtils import isbn_cleanup
-from datasources.utils.scraperUtils import priceFromText
-from datasources.utils.scraperUtils import priceStr2Float
+from bookshops.utils.scraperUtils import isbn_cleanup
+from bookshops.utils.scraperUtils import priceFromText
+from bookshops.utils.scraperUtils import priceStr2Float
 
 requests_cache.install_cache()
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
