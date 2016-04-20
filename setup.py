@@ -4,6 +4,12 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except (IOError, OSError, ImportError):
+    long_description = read('README.md')
+
 setup(
     name = "bookshops",
     version = "0.1",
@@ -37,7 +43,7 @@ setup(
     author = "vindarel",
     author_email = "ehvince@mailz.org",
     description = "Get book information (isbn or search) from real bookstores.",
-    long_description = read('README.md'),
+    long_description = long_description,
     license = "GNU LGPLv3",
     keywords = "bookshop bookstore library book isbn ean webscraping",
     url = "https://gitlab.com/vindarel/bookshops",

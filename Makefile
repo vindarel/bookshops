@@ -22,3 +22,7 @@ build:
 	python setup.py sdist
 	# build a pure python wheel (built package)
 	python setup.py bdist_wheel
+
+upload-pypi:
+	# hint: doesn't work with the old tar.gz in dist/
+	twine upload dist/*
