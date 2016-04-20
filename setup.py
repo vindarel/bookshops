@@ -29,7 +29,6 @@ setup(
         "clize==3",  # quick and easy cli args
         "tqdm",      # progress bar
         "termcolor", # terminal color
-        "xhtml2pdf", # export to pdf from html template
     ],
 
     package_data = {
