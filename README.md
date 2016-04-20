@@ -6,7 +6,7 @@ with the **isbn**, with an **advanced search**, and do **pagination**.
 
 We get the data from existing websites. We scrape:
 
-- for French books, http://www.librairie-de-paris.fr (at first Decitre, but it's less complete)
+- for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete)
 - for Spain: http://www.casadellibro.com
 - for Germany: *the site went down !* This is the danger of webscraping.
 
@@ -25,7 +25,7 @@ afterwards.
 
 See the ``odsimport`` module. It gives back a json. It's your
 responsibility to add what you want in your database (this is done in
-Abelujo).
+Abelujo https://gitlab.com/vindarel/abelujo).
 
 Usable, but work in progress.
 
@@ -45,9 +45,11 @@ If the file has no headers, use the "odsettings.py" configuration file
 
 ## Why not Amazon ?
 
-Amazon kills the book industry and its employees.  But moreover, with
-can link to a good and independent bookshop from within the
-application, and… we learn a lot in doing this !
+Amazon kills the book industry and its employees.  But moreover, we
+can add value to our results. We can link to a good and independent
+bookshop from within our application, we could command books from it,
+we could say if it has exemplaries in stock or not, etc. And… we learn
+a lot in doing this !
 
 ## Why not Google books ?
 
@@ -55,28 +57,48 @@ It has very few data.
 
 ## Why not the BNF (Bibliothèque Nationale de France) ?
 
-Because, for bookshops, we need recent books (the BNF takes a few
-months), up to date information. There isn't a lot of tools either.
+Because, for bookshops, we need recent books (they enter the BNF
+database after a few months), up to date information. There isn't a
+lot of tools either.
 
 
 # Install
 
-This lib isn't on pypi yet.
+Install from pypi:
 
-It is usable, but not mature.
+    pip install bookshops
 
-It's used as a git submodule at Abelujo https://gitlab.com/vindarel/abelujo
+It is usable, but not considered mature.
 
 # Use
 
-So, for now you need to clone this repo.
+## Command line
 
-To try it out, go to a scraper directory:
+You can try this lib on the command line with the following commands:
+- `livres`: french data
+- `libros`: spanish data
+- come and ask for more :)
 
-    cd frFR/librairiedeparis/
-    python librairiedeparisScraper.py 9782918059363
+For example:
+
+    livres antigone
+
+or
+
+    livres 9782918059363
 
 and you get the above screenshot.
+
+## As a library
+
+But most of all, from within your program:
+
+    from bookshops.frFR.librairiedeparis.librairiedeparisScraper import Scraper as frenchScraper
+
+    scraper = frenchScraper("search keywords") 
+    cards = scraper.search()
+    # we get a list of dictionnaries with the title, the authors, etc.
+
 
 ## Advanced search
 
@@ -86,7 +108,9 @@ You can search ``ed:agone`` to search for a specific publisher.
 
 ## Pagination
 
-We do pagination.
+We do pagination:
+
+    scraper = frenchScraper("search keywords", PAGE=2) 
 
 
 # Develop and test
