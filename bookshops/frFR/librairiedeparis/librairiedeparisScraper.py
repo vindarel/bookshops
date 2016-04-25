@@ -87,11 +87,16 @@ class Scraper(baseScraper):
 
     def _product_list(self):
         # The table doesn't have its css classes 'even' and 'odd' yet.
-        plist = self.soup.find(class_='tab_listlivre')
-        if not plist:
-            logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
-        plist = plist.find_all('tr')
-        return plist
+        try:
+            plist = self.soup.find(class_='tab_listlivre')
+            if not plist:
+                logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
+                return []
+            plist = plist.find_all('tr')
+            return plist
+        except Exception as e:
+            logging.error("Error while getting product list. Will return []. Error: {}".format(e))
+            return []
 
     @catch_errors
     def _nbr_results(self):
