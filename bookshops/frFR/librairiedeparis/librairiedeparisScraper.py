@@ -15,13 +15,6 @@ from sigtools.modifiers import kwoargs
 logging.basicConfig(level=logging.INFO) #to manage with ruche
 requests_cache.install_cache()
 
-# Add "datasources" to sys.path (independant from Django project,
-# to clean up for own module).
-common_dir = os.path.dirname(os.path.abspath(__file__))
-cdp, _ = os.path.split(common_dir)
-cdpp, _ = os.path.split(cdp)
-sys.path.append(cdpp)
-
 from bookshops.utils.baseScraper import Scraper as baseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn

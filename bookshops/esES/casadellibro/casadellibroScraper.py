@@ -36,12 +36,6 @@ import requests_cache
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
-# Add "datasources" to sys.path (independant from Django project,
-# to clean up for own module).
-common_dir = os.path.dirname(os.path.abspath(__file__))
-cdp, _ = os.path.split(common_dir)
-cdpp, _ = os.path.split(cdp)
-sys.path.append(cdpp)
 from bookshops.utils.baseScraper import Scraper as baseScraper
 from bookshops.utils.baseScraper import postSearch
 from bookshops.utils.scraperUtils import isbn_cleanup
