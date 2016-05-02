@@ -51,6 +51,10 @@ bookshop from within our application, we could command books from it,
 we could say if it has exemplaries in stock or not, etc. And… we learn
 a lot in doing this !
 
+Technically speaking, the Amazon API web service can be too limitating
+and not appropriate. One must register to Amazon Product Advertising
+and to AWS, and the requests rate is limited to 1 request per second.
+
 ## Why not Google books ?
 
 It has very few data.
