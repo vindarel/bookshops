@@ -94,9 +94,9 @@ def fieldNames(csvfile, delimiter=";"):
     with open(csvfile, "r") as f:
         csvdata = f.read()
     data = csvdata.splitlines()
-    # We expect that a row with "title" is the row with all field names.
+    # We expect that a row with "title" or "isbn" is the row with all field names.
     for i, line in enumerate(data):
-        if "TITLE" in line.upper() or "TITRE" in line.upper():
+        if "TITLE" in line.upper() or "TITRE" in line.upper() or "ISBN" in line.upper():
             orig_fieldnames = line
             fieldnames = [translateHeader(orig_fieldnames.split(delimiter)[ind]) for ind in range(len(orig_fieldnames.split(delimiter)))]
             fieldnames = map(lambda x: x.upper(), fieldnames)
@@ -136,7 +136,7 @@ def extractCardData(csvfile, lang="frFR", nofieldsrow=False, delimiter=";"):
     to_ret = {"fieldnames": fieldnames, "data": data, "messages": messages, "status": 0}
     orig_fieldnames, fieldnames = fieldNames(csvfile)
     if "TITLE" not in fieldnames and "ISBN" not in fieldnames:
-        msg = "Erreur: nous n'avons pas trouvé la colonne %s" % ("TITRE",)  # TODO translate
+        msg = "Erreur: nous n'avons trouvé ni la colonne %s ni la colonne ISBN" % ("TITRE",)  # TODO translate
         to_ret["messages"].append({"message": msg, "level": "error"})
         to_ret["status"] = 1
     if "PUBLISHERS" not in fieldnames and "ISBN" not in fieldnames:
