@@ -96,14 +96,18 @@ def filterResults(cards, odsrow):
             card_not_found = card
             continue
         # Check the titles, the publishers, authors if available, etc.
-        if cardCorresponds(card, odsrow):
-            accepted = True
-            card = postSearch(card)
-            if not card.get("ean") and not card.get("isbn"):
-                card_no_isbn = card
-            else:
-                card_found = card
-            break
+        try:
+            if cardCorresponds(card, odsrow):
+                accepted = True
+                card = postSearch(card)
+                if not card.get("ean") and not card.get("isbn"):
+                    card_no_isbn = card
+                else:
+                    card_found = card
+                break
+        except Exception as e:
+            log.error("Error when checking cardCorresponds: {}".format(e))
+            accepted = False
 
     if not accepted:
         card_not_found = odsrow
@@ -280,46 +284,55 @@ def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=sear
             return cards['cards_found'], cards['cards_no_isbn'], cards['cards_not_found']
 
     for i, row in tqdm(enumerate(odsdata)):
+        search_terms = None
         if "ISBN" in row and row['ISBN']:
             search_terms = row['ISBN']
             row['isbn_search'] = True
-        else:
+        elif row.get('TITLE'):
             search_terms = "{} {} {}".format(row["title"], row.get(ODS_AUTHORS, ""), row[ODS_PUBLISHER])
+        else:
+            print "The row {} has no isbn and no title: we can't search for it.".format(i)
 
         row['search_terms'] = search_terms
         # log.debug("item %d/%d: Searching %s for '%s'..." % (i, len(odsdata), datasource, search_terms))
 
         # Fire the search:
         try:
-            cards, stacktraces = search_on_datasource(search_terms)
-            if row.get('isbn_search'):
-                log.debug("Looking postSearch of {}".format(row.get('isbn')))
-                cards[0] = search_post_results(cards[0], isbn=row.get('isbn'))
+            if search_terms:
+                cards, stacktraces = search_on_datasource(search_terms)
+                if row.get('isbn_search'):
+                    log.debug("Looking postSearch of {}".format(row.get('isbn')))
+                    cards[0] = search_post_results(cards[0], isbn=row.get('isbn'))
 
         except Exception as e:
-            log.error("odslookup: Error while searching cards: {}".format(e))
+            log.error("odslookup: Error while searching cards with {}: {}".format(search_terms, e))
 
 
-        # log.debug("found %s cards.\n" % len(cards))
-        if stacktraces:
-            log.debug("warning: found errors:", stacktraces)
-        if cards:
-            found, no_isbn, not_found = filterResults(cards, row)
-            if found:
-                # log.debug("found a valid result: {}".format(found))
-                found = addRowInfo(found, row)
-                cards_found.append(found)
-            if no_isbn:
-                no_isbn = addRowInfo(no_isbn, row)
-                cards_no_isbn.append(no_isbn)
-            if not_found:
-                not_found = addRowInfo(not_found, row)
-                not_found['publishers'] = [not_found['publishers']]
-                cards_not_found.append(not_found)
+        try:
+            # log.debug("found %s cards.\n" % len(cards))
+            if stacktraces:
+                log.debug("warning: found errors:", stacktraces)
+            if cards:
+                found, no_isbn, not_found = filterResults(cards, row)
+                if found:
+                    # log.debug("found a valid result: {}".format(found))
+                    found = addRowInfo(found, row)
+                    cards_found.append(found)
+                if no_isbn:
+                    no_isbn = addRowInfo(no_isbn, row)
+                    cards_no_isbn.append(no_isbn)
+                if not_found:
+                    not_found = addRowInfo(not_found, row)
+                    not_found['publishers'] = [not_found['publishers']]
+                    cards_not_found.append(not_found)
 
-        else:
-            cards_not_found.append(row)
-        time.sleep(timeout)              # be gentle with the remote server...
+            else:
+                cards_not_found.append(row)
+            time.sleep(timeout)              # be gentle with the remote server...
+
+        except Exception as e:
+            log.error("Error studying stacktraces: {}".format(e))
+
 
     ended = datetime.now()
     print "Search on {} lasted: {}".format(datasource, ended - start)
@@ -362,8 +375,8 @@ def run(srcfile, datasource, timeout=TIMEOUT, nofieldsrow=False):
                    "cards_not_found": cards_not_found}
         f.write(json.dumps(towrite))
 
-    print "\nCards found, complete: "
-    pprint(cards_found)
+    print "\nCards found (10 results): "
+    pprint(cards_found[:10])
     print "\nCards without isbn: %i results\n" % (len(cards_no_isbn),)
     pprint(cards_no_isbn)
     print "\nCards not found: %i results\n" % (len(cards_not_found,))
