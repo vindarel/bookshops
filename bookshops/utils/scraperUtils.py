@@ -51,6 +51,8 @@ def isbn_cleanup(isbn):
     - isbn: a str / unicode
     - return: a string, with only [0-9] digits.
 
+    TODO: replace with isbnlib.canonical
+
     """
     # note: we duplicated this function in models.utils
     res = isbn
@@ -67,6 +69,8 @@ def is_isbn(it):
     - is of type str (or unicode). The string must contain only
       alpha-numerical characters.
     - length of 13 or 10
+
+    XXX: look in isbnlib
     """
     # note: method duplicated from models.utils
     ISBN_ALLOWED_LENGTHS = [13, 10]
