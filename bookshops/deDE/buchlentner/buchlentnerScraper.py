@@ -30,6 +30,93 @@ requests_cache.install_cache()
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
 
+CONSTANTS = [
+        #: Name of the website
+        ("SOURCE_NAME", "buchlentner"),
+        #: Base url of the website
+        ("SOURCE_URL_BASE", u"http://www.buchlentner.de"),
+        #: Url to which we just have to add url parameters to run the search
+        ("SOURCE_URL_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+        #: advanced url (search for isbns)
+        # ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
+        ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
+        # ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=All+Media&title=&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&lang=&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&articleno="),
+        ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+        ("URL_END", u""), # search books
+        ("TYPE_BOOK", u"book"),
+        #: Query parameter to search for the ean/isbn
+        ("ISBN_QPARAM", u""),
+        #: Query param to search for the publisher (editeur)
+        ("PUBLISHER_QPARAM", u""),
+        #: Number of results to display
+        ("NBR_RESULTS_QPARAM", u"NOMBRE"),
+        ("NBR_RESULTS", 12),
+    ]
+
+class ProductPage(object):
+    """Scraping a product page. Is necessary because the website redirects
+    us here on an isbn search (and ok, we take the redirection because
+    that page has more info that the default search results page).
+
+    exple: http://www.buchlentner.de/product/1741967/Buecher_Drama-und-Lyrik_Drama/Sophokles/Antigone
+
+    """
+
+    def __init__(self, soup=None, url=None, isbn=None):
+        self.soup = soup
+        self.url = url
+        self.isbn = isbn
+
+    def _product_list(self):
+        res = self.soup.find_all(class_="bigMainContent")
+        return res
+
+    @catch_errors
+    def _title(self, product):
+        title = product.find(class_="productTitleHeader").text.strip()
+        return title
+
+    @catch_errors
+    def _nbr_results(self):
+        return 1
+
+    @catch_errors
+    def _details_url(self, _):
+        return self.url
+
+    @catch_errors
+    def _img(self, product):
+        img = product.find(class_='icoBook').img['src']
+        img = "http:" + img
+        return img
+
+    @catch_errors
+    def _authors(self, product):
+        authors = []
+        authors = product.find(class_="productInfo").find_all('p')[2].text.strip()
+        return [authors]
+
+    @catch_errors
+    def _price(self, product):
+        price = product.find(class_='bookPrise').text.strip()
+        price = priceFromText(price)
+        price = priceStr2Float(price)
+        return price
+
+    @catch_errors
+    def _publisher(self, product):
+        pub = product.find(class_="other-media-newpdp").a.text.strip()
+        return pub
+
+    @catch_errors
+    def _isbn(self, product):
+        return self.isbn
+
+    @catch_errors
+    def _description(self, product):
+        desc = product.find('ul', class_="alt_content").text.strip()
+        return desc
+
 class Scraper(baseScraper):
     """We can search for CDs, DVD and other stuff on buchlentner.
 
@@ -46,32 +133,12 @@ class Scraper(baseScraper):
     query = ""
 
 
-    def set_constants(self):
-        #: Name of the website
-        self.SOURCE_NAME = "buchlentner"
-        #: Base url of the website
-        self.SOURCE_URL_BASE = u"http://www.buchlentner.de"
-        #: Url to which we just have to add url parameters to run the search
-        self.SOURCE_URL_SEARCH = u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="
-        #: advanced url (search for isbns)
-        self.SOURCE_URL_ADVANCED_SEARCH = u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="
-        #: the url to search for an isbn.
-        self.SOURCE_URL_ISBN_SEARCH = u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=All+Media&title=&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&lang=&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&articleno="
-        #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        self.URL_END = u"" # search books
-        self.TYPE_BOOK = u"book"
-        #: Query parameter to search for the ean/isbn
-        self.ISBN_QPARAM = u""
-        #: Query param to search for the publisher (editeur)
-        self.PUBLISHER_QPARAM = u""
-        #: Number of results to display
-        self.NBR_RESULTS_QPARAM = u"NOMBRE"
-        self.NBR_RESULTS = 12
-
     def __init__(self, *args, **kwargs):
         """
         """
-        self.set_constants()
+        # set constants to self from a list
+        for tup in CONSTANTS:
+            self.__setattr__(tup[0], tup[1])
         super(Scraper, self).__init__(*args, **kwargs)
 
     def pagination(self):
@@ -79,22 +146,9 @@ class Scraper(baseScraper):
 
         Return: a str, the necessary url part to add at the end.
         """
-        if self.page == 1 or self.page == u"1" or self.page == "1":
-            return ""
-
-        page_qparam = u""
-        if type(self.page) in [type(u"u"), type("str")]:
-            self.page = int(self.page)
-        if self.NBR_RESULTS and self.NBR_RESULTS_QPARAM:
-            page_qparam = u"&{}={}&{}={}".format(self.NBR_RESULTS_QPARAM,
-                                                 self.NBR_RESULTS,
-                                                 "DEBUT",
-                                                 self.NBR_RESULTS * (self.page - 1))
-
-        return page_qparam
+        return ""
 
     def _product_list(self):
-        # The table doesn't have its css classes 'even' and 'odd' yet.
         try:
             plist = self.soup.find(class_='searchResultsList')
             if not plist:
@@ -189,23 +243,29 @@ class Scraper(baseScraper):
         bk_list = []
         stacktraces = []
 
-        product_list = self._product_list()
-        nbr_results = self._nbr_results()
+        self_or_product = self
+        if self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE:
+            self_or_product = ProductPage(soup=self.soup,
+                                          url=self.url,
+                                          isbn=self.isbn)
+
+        product_list = self_or_product._product_list()
+        # nbr_results = self._nbr_results()
         for product in product_list:
             b = addict.Dict()
             b.search_terms = self.query
             b.data_source = self.SOURCE_NAME
             b.search_url = self.url
 
-            b.details_url = self._details_url(product)
-            b.title = self._title(product)
-            b.authors = self._authors(product)
-            b.price = self._price(product)
-            b.publishers = [self._publisher(product)]
+            b.details_url = self_or_product._details_url(product)
+            b.title = self_or_product._title(product)
+            b.authors = self_or_product._authors(product)
+            b.price = self_or_product._price(product)
+            b.publishers = [self_or_product._publisher(product)]
             b.card_type = self.TYPE_BOOK
-            b.img = self._img(product)
-            # b.summary = self._description(product)
-            # b.isbn = self._isbn(product)
+            b.img = self_or_product._img(product)
+            b.summary = self_or_product._description(product)
+            b.isbn = self_or_product._isbn(product)
 
             bk_list.append(b.to_dict())
 

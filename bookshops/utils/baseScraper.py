@@ -126,6 +126,15 @@ class Scraper(object):
 
         """
 
+        #: When we search for an isbn, it's possible the website lend
+        #us not to the default search results page, but redirect us to
+        #the product page instead. In that case the search() method,
+        #with default CSS selectors, won't work. We must scrap the
+        #product page for everything. We could not accept the
+        #redirection, but with it we go faster to a much more useful
+        #product page.
+        self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE = False
+
         self.page = 1
         isbns = []
         if not args and not kwargs:
@@ -176,6 +185,7 @@ class Scraper(object):
                 else:
                     #xxx we could search for many isbns at once.
                     self.query = isbns[0]
+                    self.isbn = self.query
 
                 self.url = self.SOURCE_URL_ISBN_SEARCH + self.query
                 self.url += self.URL_END # no pagination when isbn
@@ -197,6 +207,10 @@ class Scraper(object):
         log.warning('search url: %s' % self.url)
         # requests_cache.disabled()
         self.req = requests.get(self.url)
+        if self.req.history and self.req.history[0].status_code == 302:
+            log.info("First request: we got redirected")
+            self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE = True
+
         self.soup = BeautifulSoup(self.req.content, "lxml")
 
     def pagination(self):
@@ -218,14 +232,11 @@ class Scraper(object):
 
     @catch_errors
     def _title(self, product):
-        title = product.find(class_="prodTitle").h3.a.text.strip()
-        return title
+        pass
 
     @catch_errors
     def _details_url(self, product):
-        details_url = product.find(class_="prodTitle").h3.a.attrs["href"].strip()
-        details_url = self.SOURCE_URL_BASE + details_url
-        return details_url
+        pass
 
     @catch_errors
     def _price(self, product):
@@ -236,7 +247,6 @@ class Scraper(object):
     def _authors(self, product):
         """return a list of strings."""
         authors = []
-        authors.append(product.find(class_="prodSubTitle").h3.a.text.strip())
         return authors
 
     @catch_errors
@@ -249,23 +259,18 @@ class Scraper(object):
     @catch_errors
     def _img(self, product):
         """return the full url to the cover."""
-        img = product.find(class_="icoBook").img.attrs["src"]
-        img = "http:" + img
-        return img
+        pass
 
     @catch_errors
     def _publisher(self, product):
         """return a list of strings."""
-        publisher = product.find(class_="year").text.strip()
-        publisher = publisher.split("-")[1].strip()
+        publisher = ""
         return [publisher]
 
     @catch_errors
     def _date(self, product):
         """return a string."""
-        date = product.find(class_="year").text.strip()
-        date = date.split("-")[0].split(":")[1].strip()
-        return date
+        pass
 
     @catch_errors
     def _isbn(self, product):
