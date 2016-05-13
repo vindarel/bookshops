@@ -95,4 +95,4 @@ def print_card(card):
         format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
                card.price,
-               card.isbn)
+               card.isbn if card.isbn else "")

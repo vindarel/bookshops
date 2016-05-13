@@ -272,19 +272,31 @@ def postSearch(card, isbn=None, description=None):
     card = card.to_dict()
     return card
 
-@annotate(words=clize.Parameter.REQUIRED)
-@kwoargs()
-def main(*words):
+@annotate(isbn="i", timing="t", words=clize.Parameter.REQUIRED)
+@kwoargs("isbn", "timing")
+def main(isbn=False, timing=False, *words):
     """
     words: keywords to search (or isbn/ean)
     """
     if not words:
         print "Please give keywords as arguments"
         return
+    import time
+    start = time.time()
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
+
+    # Getting all the isbn will take longer, even with multiprocessing.
+    if isbn:
+        import multiprocessing
+        pool = multiprocessing.Pool(8)
+        # bklist = [postSearch(it) for it in bklist]
+        bklist = pool.map(postSearch, bklist)
+
+    end = time.time()
     print " Nb results: {}".format(len(bklist))
-    bklist = [postSearch(it) for it in bklist]
+    if timing:
+        print "Took {} s".format(end - start)
     map(print_card, bklist)
 
 def run():
