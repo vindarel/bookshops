@@ -15,6 +15,9 @@ librairiedeparis:
 casadellibro:
 	@cd esES/casadellibro/ && python test_end2end.py
 
+germanscraper:
+	@cd bookshops/deDE/buchlentner/ && python test_end2end.py
+
 testscrapers: decitre casadellibro librairiedeparis
 
 build:

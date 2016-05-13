@@ -1,0 +1,26 @@
+- search:
+    search_keywords: "9783150190753"
+    results:
+      title: "Antigone"
+      price: 2.0
+      isbn: "9783150190753"
+      authors:
+        - Sophokles
+      publishers:
+        - Reclam, Ditzingen
+      img: http://multimedia.knv.de/cover/00/00/01/0000016000001N.jpg
+      details_url: "http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:B\xfccher&searchBtn=SUCHEN&searchTerm=9783150190753"
+
+- search:
+    search_keywords: "antigone"
+    # at least this result
+    results:
+      title: "Antigone"
+      price: 2.0
+      isbn: "9783150190753"
+      authors:
+        - Sophokles
+      publishers:
+        - Reclam, Ditzingen
+      img: "http://multimedia.knv.de/cgi-bin/knvmmdb.dll?herkunft=knv&MM_IDENTNR=999bk&typ=cover&id=160&kennwort=LGPOJHCXRLGEGN&rang=01&variante=normal"
+      details_url: "http://www.buchlentner.de/product/1741967/Buecher_Drama-und-Lyrik_Drama/Sophokles/Antigone"
