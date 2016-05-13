@@ -7,13 +7,17 @@ npm:
 install: pip npm
 
 decitre:
-	@cd frFR/decitre/ && python test_end2end.py
+	@cd bookshops/frFR/decitre/ && python test_end2end.py
 
 librairiedeparis:
-	@cd frFR/librairiedeparis/ && python test_end2end.py
+	@cd bookshops/frFR/librairiedeparis/ && python test_end2end.py
+
+frenchscrapers: librairiedeparis decitre
 
 casadellibro:
-	@cd esES/casadellibro/ && python test_end2end.py
+	@cd bookshops/esES/casadellibro/ && python test_end2end.py
+
+spanishscraper: casadellibro
 
 germanscraper:
 	@cd bookshops/deDE/buchlentner/ && python test_end2end.py

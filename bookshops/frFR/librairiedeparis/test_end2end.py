@@ -25,15 +25,7 @@ import sys
 import os
 import unittest
 
-# Add "datasources" to sys.path (independant from Django project,
-# to clean up for own module).
-common_dir = os.path.dirname(os.path.abspath(__file__))
-cdp, _ = os.path.split(common_dir)
-cdpp, _ = os.path.split(cdp)
-cdppp, _ = os.path.split(cdpp)
-sys.path.append(cdppp)
-
-from datasources.utils.testScraperBase import testScraperBase
+from bookshops.utils.testScraperBase import testScraperBase
 
 from librairiedeparisScraper import Scraper
 from librairiedeparisScraper import postSearch
