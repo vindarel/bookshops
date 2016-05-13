@@ -12,7 +12,7 @@ except (IOError, OSError, ImportError):
 
 setup(
     name = "bookshops",
-    version = "0.1.3",
+    version = "0.2.0",
     packages = find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires = [
@@ -52,6 +52,7 @@ setup(
         "console_scripts": [
             "livres = bookshops.frFR.librairiedeparis.librairiedeparisScraper:run",
             "libros = bookshops.esES.casadellibro.casadellibroScraper:run",
+            "bucher = bookshops.deDE.buchlentner.buchlentnerScraper:run",
         ],
     },
 
