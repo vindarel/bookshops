@@ -148,8 +148,19 @@ This is webscraping, so it doesn't go without pitfalls:
   sraper too. This can be catched early with automated and frequent
   tests (work ongoing).
 
-We use multiprocessing to speed up scrapers (see
-[issue #1](https://gitlab.com/vindarel/bookshops/issues/1)).
+
+# Changelog
+
+## 0.2.0
+
+- German scraper
+- multiprocessing for the german scraper (from 15 to 9s) (see [issue #1](https://gitlab.com/vindarel/bookshops/issues/1))
+- `--isbn` option for it
+
+## 0.1.x
+
+- french, spanish scrapers
+- command line tool
 
 # Licence
 
