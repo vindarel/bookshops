@@ -151,6 +151,10 @@ This is webscraping, so it doesn't go without pitfalls:
 
 # Changelog
 
+## 0.2.1
+
+- german scraper: search by isbn
+
 ## 0.2.0
 
 - German scraper
