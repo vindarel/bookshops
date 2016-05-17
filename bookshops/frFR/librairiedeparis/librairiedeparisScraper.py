@@ -12,7 +12,7 @@ import requests_cache
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
-logging.basicConfig(level=logging.INFO) #to manage with ruche
+logging.basicConfig(level=logging.ERROR) #to manage with ruche
 requests_cache.install_cache()
 
 from bookshops.utils.baseScraper import Scraper as baseScraper
