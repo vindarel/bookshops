@@ -18,11 +18,15 @@
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import sys
 
+import clize
 import lxml.html
 import requests
 import requests_cache
+from sigtools.modifiers import annotate
+from sigtools.modifiers import kwoargs
+
+from bookshops.utils.scraperUtils import print_card
 from tabulate import tabulate
 
 requests_cache.install_cache()
@@ -35,7 +39,7 @@ DEFAULT_IMG_SIZE = "150"  # "90" or "150"
 TYPE_CD = "cd"
 TYPE_VINYL = "vinyl"
 
-class Scraper:
+class Scraper(object):
     """Scrap the discogs search results.
 
     DISCLAIMER: the official python client has been broken since more than a
@@ -88,12 +92,22 @@ class Scraper:
 
         return to_ret, [] # stacktraces
 
+@annotate(words=clize.Parameter.REQUIRED)
+@kwoargs()
+def main(*words):
+    """
+    words: keywords to search (or isbn/ean)
+    """
+    if not words:
+        print "Please give keywords as arguments"
+        return
+    scrap = Scraper(*words)
+    bklist, errors = scrap.search()
+    print " Nb results: {}".format(len(bklist))
+    map(print_card, bklist)
+
+def run():
+    exit(clize.run(main))
+
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        res, _ = Scraper(*sys.argv[1:]).search()
-        headers = ['artist', 'album']
-        lines = [ [it['authors'], it['title']] for it in res ]
-        print tabulate(lines, headers)
-        print "results: {}".format(len(res))
-    else:
-        print "Usage: python discogsScraper search terms foo"
+    clize.run(main)
