@@ -19,9 +19,26 @@
 
 import re
 import string
+import time
 
 import addict
 from termcolor import colored
+
+
+class Timer(object):
+    def __init__(self, name="", silent=False):
+        if not name:
+            name = "Timer"
+        self.name = name
+        self.silent = silent
+
+    def __enter__(self):
+        self.start = time.time()
+
+    def __exit__(self, exc_type, exc_val, traceback):
+        self.end = time.time()
+        if not self.silent:
+            print "{} lasted: {} sec".format(self.name, self.end - self.start)
 
 
 def priceFromText(text):

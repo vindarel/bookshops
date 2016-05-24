@@ -27,7 +27,7 @@ from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
 from bookshops.utils.scraperUtils import print_card
-from tabulate import tabulate
+from bookshops.utils.scraperUtils import Timer
 
 requests_cache.install_cache()
 
@@ -101,10 +101,11 @@ def main(*words):
     if not words:
         print "Please give keywords as arguments"
         return
-    scrap = Scraper(*words)
-    bklist, errors = scrap.search()
-    print " Nb results: {}".format(len(bklist))
-    map(print_card, bklist)
+    with Timer("call to scraper", silent=True):
+        scrap = Scraper(*words)
+        bklist, errors = scrap.search()
+        print " Nb results: {}".format(len(bklist))
+        map(print_card, bklist)
 
 def run():
     exit(clize.run(main))
