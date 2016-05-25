@@ -9,6 +9,7 @@ We get the data from existing websites. We scrape:
 - for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete)
 - for Spain: http://www.casadellibro.com
 - for Germany: http://www.buchlentner.de
+- actually we like music too: https://www.discogs.com
 
 we get: the title and authors, the price, the publisher(s), the cover, etc
 
@@ -83,6 +84,7 @@ You can try this lib on the command line with the following commands:
 - `livres`: french books
 - `libros`: spanish books
 - `bucher`: german books
+- `discogs`: CDs
 - come and ask for more :)
 
 For example:
