@@ -79,6 +79,17 @@ def convert2csv(odsfile):
     else:
         return None
 
+def guess_delimiter(fieldnames_str, delimiter=";"):
+    """
+    """
+    if "," in fieldnames_str:
+        return ","
+    elif ";" in fieldnames_str:
+        return ";"
+    else:
+        print "what is the current delimiter ? That shouldn't happen"
+        return delimiter
+
 def fieldNames(csvfile, delimiter=";"):
     """Return the field names of the file.
     They may not be at the first row.
@@ -86,7 +97,7 @@ def fieldNames(csvfile, delimiter=";"):
     If there is no field names, read a config file ("odssettings.py")
     where they are specified.
 
-    return a tuple (original fieldnames, translated fieldnames).
+    return a tuple (original fieldnames, translated fieldnames, true delimiter).
 
     """
     settings = "odssettings.py"
@@ -98,9 +109,11 @@ def fieldNames(csvfile, delimiter=";"):
     for i, line in enumerate(data):
         if "TITLE" in line.upper() or "TITRE" in line.upper() or "ISBN" in line.upper():
             orig_fieldnames = line
-            fieldnames = [translateHeader(orig_fieldnames.split(delimiter)[ind]) for ind in range(len(orig_fieldnames.split(delimiter)))]
+            # Guess the delimiter
+            cur_delimiter = guess_delimiter(orig_fieldnames, delimiter=delimiter)
+            fieldnames = [translateHeader(orig_fieldnames.split(cur_delimiter)[ind]) for ind in range(len(orig_fieldnames.split(cur_delimiter)))]
             fieldnames = map(lambda x: x.upper(), fieldnames)
-            return orig_fieldnames, fieldnames
+            return orig_fieldnames, fieldnames, cur_delimiter
 
     # No field names ? Read a config file.
     if isfile(settings):
@@ -108,12 +121,12 @@ def fieldNames(csvfile, delimiter=";"):
             from odssettings import fields
             fields = map(lambda x: x.upper(), fields)
             csvfields = ",".join(fields)
-            return csvfields, fields
+            return csvfields, fields, cur_delimiter
         except Exception as e:
             log.error("Error while trying to import the field names from the odssettings.py file: {}".format(e))
 
     log.info("warning: no fieldnames found in file {}.".format(csvfile))
-    return [], []
+    return [], [], delimiter
 
 def extractCardData(csvfile, lang="frFR", nofieldsrow=False, delimiter=";"):
     """Return the interesting data.
@@ -134,7 +147,7 @@ def extractCardData(csvfile, lang="frFR", nofieldsrow=False, delimiter=";"):
     fieldnames = data = None
     messages = []
     to_ret = {"fieldnames": fieldnames, "data": data, "messages": messages, "status": 0}
-    orig_fieldnames, fieldnames = fieldNames(csvfile)
+    orig_fieldnames, fieldnames, delimiter = fieldNames(csvfile)
     if "TITLE" not in fieldnames and "ISBN" not in fieldnames:
         msg = "Erreur: nous n'avons trouvé ni la colonne %s ni la colonne ISBN" % ("TITRE",)  # TODO translate
         to_ret["messages"].append({"message": msg, "level": "error"})
