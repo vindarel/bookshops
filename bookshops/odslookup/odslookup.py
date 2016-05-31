@@ -223,10 +223,11 @@ def addRowInfo(card, row):
 
     return: the card (dict).
     """
+    row = {k.lower(): v for k,v in row.iteritems()} # just in case, lower every key.
     if not card:
         print "card is None. that shouldn't happen."
         return card
-    if row.get('quantity'): # TODO: to check
+    if row.has_key('quantity'): # TODO: to check
         card['quantity'] = toInt(row.get('quantity'))
 
     if row.get('discount') and not card.get('discount'):
