@@ -16,12 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
+import json
+import logging
+import os
 import string as string_mod
 
 from toolz import itemmap
 from toolz import keymap
 from unidecode import unidecode
 
+logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 def cleanText(tag):
     return unidecode(tag.strip().strip(":")) # see rmPunctuation
@@ -186,3 +191,22 @@ def replaceAccentsInStr(string):
         return it
 
     return it
+
+def read_json_cache(srcfile):
+    """Read the json backup file, if any.
+
+    Return list of cards found, without isbn not found.
+    """
+    basename, ext = os.path.splitext(os.path.basename(srcfile))
+    debugfile = basename + ".json"
+    if os.path.isfile(debugfile):
+        with open(debugfile, "r") as f:
+            print "*********************"
+            print "Reading the json cache file..."
+            print "*********************"
+            data = f.read()
+        if data:
+            cards = json.loads(data)
+            return cards
+            # return cards['cards_found'], cards['cards_no_isbn'], cards['cards_not_found']
+

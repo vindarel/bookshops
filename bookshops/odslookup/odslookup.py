@@ -40,6 +40,7 @@ import ods2csv2py
 from odsutils import toInt
 from odsutils import replaceAccentsInStr
 from odsutils import rmPunctuation
+from odsutils import read_json_cache
 from frFR.librairiedeparis.librairiedeparisScraper import Scraper
 from frFR.librairiedeparis.librairiedeparisScraper import postSearch
 
@@ -272,16 +273,9 @@ def lookupCards(odsdata, datasource=None, timeout=0.2, search_on_datasource=sear
     start = datetime.now()
 
     # Get the json "cache", if any.
-    basename, ext = os.path.splitext(os.path.basename(srcfile))
-    debugfile = basename + ".json"
-    if os.path.isfile(debugfile):
-        with open(debugfile, "r") as f:
-            log.info("Reading the json cache file...")
-            data = f.read()
-        if data:
-            cards = json.loads(data)
-            # cards = cards.get('cards_found') + cards.get('cards_no_isbn') + cards.get('cards_not_found')
-            return cards['cards_found'], cards['cards_no_isbn'], cards['cards_not_found']
+    cards = read_json_cache(srcfile)
+    if cards:
+        return cards['cards_found'], cards['cards_no_isbn'], cards['cards_not_found']
 
     for i, row in tqdm(enumerate(odsdata)):
         search_terms = None
