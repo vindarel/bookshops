@@ -21,6 +21,7 @@ setup(
         "beautifulsoup4",
         "isbnlib<4", # useful tools to manipulate and get isbn
         "lxml==3.5", # parsing
+        "html5lib<=0.9999999", # parsing. Newer version breaks bs4. see https://bugs.launchpad.net/beautifulsoup/+bug/1603299
         "toolz",     # functional utils
         "tabulate", 
         "addict",    # fancy dict access
