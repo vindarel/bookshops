@@ -1,0 +1,21 @@
+# https://docs.gitlab.com/ce/ci/yaml/README.html
+
+# Testing our webscrapers work against the real websites.
+# Goal: run them periodically.
+
+image: python:2.7
+
+before_script:
+  - make install
+
+french_scraper:
+  script:
+    - make librairiedeparis
+
+spanish_scraper:
+  script:
+    - make casadellibro
+
+german_scraper:
+  script:
+    - make germanscraper
