@@ -1,10 +1,7 @@
 pip:
 	pip install -r requirements.txt
 
-npm:
-	npm install
-
-install: pip npm
+install: pip 
 
 decitre:
 	@cd bookshops/frFR/decitre/ && python test_end2end.py
