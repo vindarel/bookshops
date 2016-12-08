@@ -11,6 +11,8 @@ librairiedeparis:
 
 frenchscrapers: librairiedeparis decitre
 
+frenchscraper: librairiedeparis
+
 casadellibro:
 	@cd bookshops/esES/casadellibro/ && python test_end2end.py
 
