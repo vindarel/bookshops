@@ -192,6 +192,11 @@ class Scraper(baseScraper):
         except Exception, e:
             print 'Error on getting book details', e
 
+    @catch_errors
+    def _date_publication(self, product):
+        date_publication = product.find(class_="date_parution").text.strip()
+        return date_publication
+
     def search(self, *args, **kwargs):
         """Searches books. Returns a list of books.
 
@@ -211,7 +216,7 @@ class Scraper(baseScraper):
             b.search_terms = self.query
             b.data_source = self.SOURCE_NAME
             b.search_url = self.url
-
+            b.date_publication = self._date_publication(product)
             b.details_url = self._details_url(product)
             b.title = self._title(product)
             b.authors = self._authors(product)

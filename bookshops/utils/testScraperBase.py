@@ -77,6 +77,7 @@ class testScraperBase(unittest.TestCase):
                              "publishers",
                              "authors",
                              "img",
+                             "date_publication",
                              "details_url"]:
                     # Better: use nose's test generators to test all attributes at once.
                     self.assertEqual(filtered_res[0].get(attr), dataresults.get(attr))

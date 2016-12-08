@@ -239,6 +239,12 @@ class Scraper(object):
         pass
 
     @catch_errors
+    def _date_publication(self, product):
+        """Date of publication. Not a Date object, just a string.
+        """
+        pass
+
+    @catch_errors
     def _price(self, product):
         """return a float."""
         return None
@@ -294,6 +300,7 @@ class Scraper(object):
             b["isbn"] = self._isbn(product) # missing
             b["title"] = self._title(product)
             b["details_url"] = self._details_url(product)
+            b["date_publication"] = self._date_publication(product)
             b["search_url"] = self.url
             b["search_terms"] = self.query
             b["authors"] = self._authors(product)
