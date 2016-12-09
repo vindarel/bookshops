@@ -282,6 +282,13 @@ class Scraper(object):
     def _isbn(self, product):
         pass
 
+    @catch_errors
+    def _availability(product):
+        """Availability.
+        Return: a string.
+        """
+        pass
+
     def search(self, *args, **kwargs):
         """Searches books.
 
@@ -309,6 +316,7 @@ class Scraper(object):
             b["img"] = self._img(product)
             b["publishers"] = self._publisher(product)
             b["date"] = self._date(product)
+            b["availability"] = self._availability(product)
             b["card_type"] = self.TYPE_BOOK
             bk_list.append(b)
 

@@ -197,6 +197,15 @@ class Scraper(baseScraper):
         date_publication = product.find(class_="date_parution").text.strip()
         return date_publication
 
+    @catch_errors
+    def _availability(self, product):
+        """Return: string.
+        """
+        availability = product.find(class_='disponibilite')
+        if availability:
+            availability = availability.text.strip()
+        return availability
+
     def search(self, *args, **kwargs):
         """Searches books. Returns a list of books.
 
@@ -226,6 +235,7 @@ class Scraper(baseScraper):
             b.img = self._img(product)
             b.summary = self._description(product)
             b.isbn = self._isbn(product)
+            b.availability = self._availability(product)
 
             bk_list.append(b.to_dict())
 
