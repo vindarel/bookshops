@@ -6,7 +6,7 @@ with the **isbn**, with an **advanced search**, and do **pagination**.
 
 We get the data from existing websites. We scrape:
 
-- for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete). ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
+- for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete). See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
 - for Spain: http://www.casadellibro.com ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=spanish_scraper)
 - for Germany: http://www.buchlentner.de ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=german_scraper)
 - actually we like music too: https://www.discogs.com
@@ -15,7 +15,7 @@ we get: the title and authors, the price, the publisher(s), the cover, etc
 
 <img src="cli-search.png"</img>
 
-## Import data from an ods or csv file
+## Import data from an ods or csv file (experimental)
 
 Another goal of this lib is to easily fetch a large amount of books
 you have listed in an ods or csv file.
