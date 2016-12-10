@@ -2,18 +2,21 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from termcolor import colored
 import os
 import re
 import sys
 
 import addict
 import clize
+import requests
 import requests_cache
+from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
+from sigtools.modifiers import autokwoargs
 from sigtools.modifiers import kwoargs
 
 logging.basicConfig(level=logging.ERROR) #to manage with ruche
-requests_cache.install_cache()
 
 from bookshops.utils.baseScraper import Scraper as baseScraper
 from bookshops.utils.decorators import catch_errors
@@ -24,6 +27,7 @@ from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
+requests_cache.install_cache()
 log = logging.getLogger(__name__)
 
 class Scraper(baseScraper):
@@ -257,10 +261,89 @@ def postSearch(card, isbn=None):
     """
     return card
 
-@annotate(words=clize.Parameter.REQUIRED)
-@kwoargs()
-def main(*words):
+def _scrape_review(link):
     """
+    - link: url to get a review from.
+
+    Return: a dict (or None).
+    """
+    from goose import Goose
+    goo = Goose()
+    SHORT_SUMMARY_LENGTH = 200
+    LONG_SUMMARY_LENGTH = 2000
+    article = goo.extract(url=link)
+
+    if not article.cleaned_text:
+        return None
+
+    res = {
+        'title': article.title,
+        'meta_description': article.meta_description,
+        'url': link,
+        'short_summary': article.cleaned_text[:SHORT_SUMMARY_LENGTH],
+        'long_summary': article.cleaned_text[:LONG_SUMMARY_LENGTH],
+        }
+    return res
+
+def reviews(card):
+    """Get some reviews on good websites.
+
+    We search on lmda.net.
+
+    - card: a card dict with at least title, authors
+
+    Return: a list of reviews (dict) with: title, url, short summary, long summary.
+    """
+    # Search on lmda.net magazine.
+    url = "https://framabee.org/?q=site%3Almda.net {{ search }} &categories=general"
+    if not card.get('authors') or not card.get('title'):
+        return None
+
+    req = requests.get(url.replace('{{ search }}', '{} {}'.format(
+        card['authors'][0],
+        card['title'])))
+    if not req.status_code == 200:
+        return None
+
+    soup = BeautifulSoup(req.content, 'lxml')
+    try:
+        links = soup.find_all(class_='result')
+    except Exception as e:
+        print u"Error finding results in html: {}".format(e)
+        return None
+
+    if not links:
+        return None
+
+    # Links to lmda.net.
+    try:
+        links = [it.h4.a.attrs['href'] for it in links]
+    except Exception as e:
+        print u"Error extracting href from soup: {}".format(e)
+        return None
+
+    # only a few reviews. All won't be relevant.
+    links = links[:5]
+
+    # Extract the reviews, in parallel.
+    revs = []
+    try:
+        import multiprocessing
+        pool = multiprocessing.Pool(8)
+        revs = pool.map(_scrape_review, links)
+        revs = filter(lambda it: it is not None, revs)
+    except Exception as e:
+        print u"Error getting reviews: {}".format(e)
+
+    return revs
+
+
+@annotate(words=clize.Parameter.REQUIRED, review='r')
+@autokwoargs()
+def main(review=False, *words):
+    """
+    review: search for reviews on lmda.net, and print a short summary.
+
     words: keywords to search (or isbn/ean)
     """
     if not words:
@@ -270,6 +353,16 @@ def main(*words):
     bklist, errors = scrap.search()
     print " Nb results: {}".format(len(bklist))
     bklist = [postSearch(it) for it in bklist]
+
+    # Get reviews:
+    if review:
+        rev = _scrape_review('http://www.lmda.net/din/tit_lmda.php?Id=17702')
+        revs = reviews(bklist[0])
+        print "We got {} reviews:".format(len(revs))
+        for rev in revs:
+            print rev['short_summary']
+            print colored(rev['url'], 'grey')
+
     map(print_card, bklist)
 
 def run():

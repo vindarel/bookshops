@@ -330,3 +330,10 @@ def postSearch(card):
     Return: the card dict, with isbn
     """
     return card
+
+def reviews(card_dict):
+    """Get reviews of that card on good websites.
+
+    Return: a list of reviews (dict) with: title, url, short and long summary.
+    """
+    pass

@@ -18,3 +18,17 @@ It returns:
 - `title`
 
 It needs one pass (it grabs the isbn and the price on the first pass).
+
+### Getting book reviews
+
+We can search for book reviews on [lmda.net](http://www.lmda.net) (or
+rather, we look for content on this site hoping that it is a review
+about the book).
+
+```
+librairiedeparisScraper.review(card_dictionnary)
+```
+
+or
+
+    livres 9782918059363 -r  # -r to get reviews

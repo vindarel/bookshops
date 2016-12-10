@@ -13,6 +13,9 @@ We get the data from existing websites. We scrape:
 
 we get: the title and authors, the price, the publisher(s), the cover, etc
 
+We can sometimes search for **reviews of a book** (currently, french
+books, that we get from [lmda.net](http://www.lmda.net)).
+
 <img src="cli-search.png"</img>
 
 ## Import data from an ods or csv file (experimental)

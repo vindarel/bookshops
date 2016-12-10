@@ -32,6 +32,7 @@ setup(
         "pyyaml==3.11",
         "tqdm",      # progress bar
         "termcolor", # terminal color
+        "goose-extractor", # extract summaries and meta descriptions from webpages
     ],
 
     package_data = {
