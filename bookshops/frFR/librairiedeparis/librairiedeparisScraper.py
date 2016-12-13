@@ -269,7 +269,7 @@ def _scrape_review(link):
     """
     from goose import Goose
     goo = Goose()
-    SHORT_SUMMARY_LENGTH = 200
+    SHORT_SUMMARY_LENGTH = 400
     LONG_SUMMARY_LENGTH = 2000
     article = goo.extract(url=link)
 
@@ -281,7 +281,7 @@ def _scrape_review(link):
         'meta_description': article.meta_description,
         'url': link,
         'short_summary': article.cleaned_text[:SHORT_SUMMARY_LENGTH],
-        'long_summary': article.cleaned_text[:LONG_SUMMARY_LENGTH],
+        'long_summary': article.cleaned_text[:LONG_SUMMARY_LENGTH] + "...",
         }
     return res
 
