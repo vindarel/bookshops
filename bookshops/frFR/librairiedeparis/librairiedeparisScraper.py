@@ -295,11 +295,11 @@ def reviews(card):
     Return: a list of reviews (dict) with: title, url, short summary, long summary.
     """
     # Search on lmda.net magazine.
-    url = "https://framabee.org/?q=site%3Almda.net {{ search }} &categories=general"
+    url = u"https://framabee.org/?q=site%3Almda.net {{ search }} &categories=general"
     if not card.get('authors') or not card.get('title'):
         return None
 
-    req = requests.get(url.replace('{{ search }}', '{} {}'.format(
+    req = requests.get(url.replace('{{ search }}', u'{} {}'.format(
         card['authors'][0],
         card['title'])))
     if not req.status_code == 200:
