@@ -332,6 +332,10 @@ def reviews(card):
         pool = multiprocessing.Pool(8)
         revs = pool.map(_scrape_review, links)
         revs = filter(lambda it: it is not None, revs)
+
+        # don't keep zombi processes; the context manager didn't seem to work.
+        pool.terminate()
+        pool.join()
     except Exception as e:
         print u"Error getting reviews: {}".format(e)
 
