@@ -45,54 +45,54 @@ class testOdsUtils(unittest.TestCase):
             # simple (french column names)
             # warning: path depends on who runs the test.
             ("csvfile.csv", {"fieldnames": ['AUTHORS', 'TITLE', 'PUBLISHER', 'PRICE', '', ''],
-                                   "data": data_csvfile,
-                                   "messages": []}),
+                             "data": data_csvfile,
+                             "messages": []}),
             # more real (from libertalia.csv)
             ("csvreal.csv", {"fieldnames": ['TITLE', 'AUTHORS', 'STOCK', 'PRICE',
-                                                  'NB VENDUS', 'PRIX TOTAL', 'REMISE', 'PRIX DU', 'PUBLISHER'],
-                                   "data":
-                                   [{'NB VENDUS': '',
-                                     'PRIX DU': '0',
-                                     'PRIX TOTAL': '0',
-                                     'REMISE': '40%',
+                                            'NB VENDUS', 'PRIX TOTAL', 'REMISE', 'PRIX DU', 'PUBLISHER'],
+                             "data":
+                             [{'NB VENDUS': '',
+                               'PRIX DU': '0',
+                               'PRIX TOTAL': '0',
+                               'REMISE': '40%',
+                               'STOCK': '3',
+                               'authors': '',
+                               'price': '10',
+                               'publisher': 'libertalia',
+                               'title': 'Apprendre \xc3\xa0 d\xc3\xa9sob\xc3\xa9ir'},
+                              {'NB VENDUS': '',
+                               'PRIX DU': '0',
+                               'PRIX TOTAL': '0',
+                               'REMISE': '40%',
+                               'STOCK': '3',
+                               'authors': '',
+                               'price': '18',
+                               'publisher': 'libertalia',
+                               'title': 'Bourgeois et bras nus'},
+                              {'NB VENDUS': '',
+                               'PRIX DU': '0',
+                               'PRIX TOTAL': '0',
+                               'REMISE': '40%',
                                      'STOCK': '3',
-                                     'authors': '',
-                                     'price': '10',
-                                     'publisher': 'libertalia',
-                                     'title': 'Apprendre \xc3\xa0 d\xc3\xa9sob\xc3\xa9ir'},
-                                    {'NB VENDUS': '',
-                                     'PRIX DU': '0',
-                                     'PRIX TOTAL': '0',
-                                     'REMISE': '40%',
-                                     'STOCK': '3',
-                                     'authors': '',
-                                     'price': '18',
-                                     'publisher': 'libertalia',
-                                     'title': 'Bourgeois et bras nus'},
-                                    {'NB VENDUS': '',
-                                     'PRIX DU': '0',
-                                     'PRIX TOTAL': '0',
-                                     'REMISE': '40%',
-                                     'STOCK': '3',
-                                     'authors': '',
-                                     'price': '20',
-                                     'publisher': 'libertalia',
-                                     'title': 'Crack capitalism                                 '}]
+                               'authors': '',
+                               'price': '20',
+                               'publisher': 'libertalia',
+                               'title': 'Crack capitalism                                 '}]
 
-                                   ,
-                                   "messages": []}),
+                             ,
+                             "messages": []}),
             # No title nor publisher columns.
             ("nofieldnames.csv", {"fieldnames": [],
-                                   "data": None,
-                                   "messages": []}),
+                                  "data": None,
+                                  "messages": []}),
             ("voidfile.csv", {"fieldnames": [],
-                                   "data": None,
-                                   "messages": []}),  # void file
+                              "data": None,
+                              "messages": []}),  # void file
             # Same as first with english column names.
             ("english.csv", {"fieldnames": ['AUTHORS', 'TITLE', 'PUBLISHER', 'PRICE', '', ''],
-                                   "data": data_csvfile,
-                                   "messages": []}),
-            ]
+                             "data": data_csvfile,
+                             "messages": []}),
+        ]
 
         self.maxDiff = None  # Show diff of big lists.
 
