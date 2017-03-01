@@ -210,6 +210,24 @@ class Scraper(baseScraper):
             availability = availability.text.strip()
         return availability
 
+    @catch_errors
+    def _format(self, product):
+        """
+        Possible formats :pocket, big.
+
+        - return: str or None
+        """
+        FMT_POCKET = "Format Poche"
+        FMT_LARGE = "Grand Format"
+        fmt = product.find(class_='genre')
+        res = None
+        if FMT_LARGE in fmt.text:
+            res = FMT_LARGE
+        elif FMT_POCKET in fmt.text:
+            res = FMT_POCKET
+
+        return res
+
     def search(self, *args, **kwargs):
         """Searches books. Returns a list of books.
 
@@ -231,6 +249,7 @@ class Scraper(baseScraper):
             b.search_url = self.url
             b.date_publication = self._date_publication(product)
             b.details_url = self._details_url(product)
+            b.fmt = self._format(product)
             b.title = self._title(product)
             b.authors = self._authors(product)
             b.price = self._price(product)
