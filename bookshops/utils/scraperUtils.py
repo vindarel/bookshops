@@ -26,6 +26,17 @@ from termcolor import colored
 
 
 class Timer(object):
+    """
+    Context manager. If not muted, prints its mesure on stdout.
+
+    Usage:
+
+    with Timer("short description"[, silent=True]):
+        pass
+
+    - silent: False: prints its mesure (default). True, do nothing.
+
+    """
     def __init__(self, name="", silent=False):
         if not name:
             name = "Timer"

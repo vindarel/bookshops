@@ -16,8 +16,6 @@ from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
 from sigtools.modifiers import kwoargs
 
-logging.basicConfig(level=logging.ERROR) #to manage with ruche
-
 from bookshops.utils.baseScraper import Scraper as baseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
@@ -25,9 +23,15 @@ from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
+from bookshops.utils.scraperUtils import Timer
+from bookshops.odslookup.odsutils import rmPunctuation
 
-logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
+logging.basicConfig(level=logging.ERROR) #to manage with ruche
 requests_cache.install_cache()
+
+
+# logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
 
 class Scraper(baseScraper):
@@ -307,21 +311,33 @@ def _scrape_review(link):
 def reviews(card):
     """Get some reviews on good websites.
 
-    We search on lmda.net.
+    We search on:
+    - lmda.net,
+    - franceculture.fr
 
-    - card: a card dict with at least title, authors
+    search engine: framabee.org (longish).
+
+    - card: a card dict with at least title, authors, distributor.
 
     Return: a list of reviews (dict) with: title, url, short summary, long summary.
     """
+    # silent=False
+    silent=True
     # Search on lmda.net magazine.
-    url = u"https://framabee.org/?q=site%3Almda.net {{ search }} &categories=general"
+    url = u"https://framabee.org/?q=site%3Almda.net+site%3Afranceculture.org {{ search }} &categories=general"
+    # on one website only with framabee :/
+    # url = u"https://framabee.org/?q=site%3Afranceculture.org {{ search }} &categories=general"
+    # on all internet:
+    # url = u"https://framabee.org/?q={{ search }}&categories=general"
     if not card.get('authors') or not card.get('title'):
         return None
 
-    req = requests.get(url.replace('{{ search }}', u'{} {}'.format(
-        card['authors'][0],
-        card['title'])))
+    urltosearch = url.replace('{{ search }}', u'{}'.format(rmPunctuation(card['title'])))
+    logging.info(u"request of reviews for {}...".format(urltosearch))
+    with Timer("request on framabee", silent=silent):   # False: print output.
+        req = requests.get(urltosearch)
     if not req.status_code == 200:
+        logging.info(u"status code for request on {}: {}".format(card['title'], req.status_code))
         return None
 
     soup = BeautifulSoup(req.content, 'lxml')
