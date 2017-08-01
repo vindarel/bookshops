@@ -18,24 +18,6 @@ books, that we get from [lmda.net](http://www.lmda.net)).
 
 <img src="cli-search.png"</img>
 
-## Import data from an ods or csv file (experimental)
-
-Another goal of this lib is to easily fetch a large amount of books
-you have listed in an ods or csv file.
-
-If your file has an 'isbn' and a 'quantity' column, it's easy, we will
-find all the book information.
-
-If it only has the title and the publisher, it's doable but error prone. We
-can still do it, but you shall do an inventory of your stock
-afterwards.
-
-See the ``odsimport`` module. It gives back a json. It's your
-responsibility to add what you want in your database (this is done in
-Abelujo https://gitlab.com/vindarel/abelujo).
-
-Usable, but work in progress.
-
 ### Accepted format and columns
 
 We can read ods and csv files.
@@ -150,11 +132,13 @@ This is webscraping, so it doesn't go without pitfalls:
 
 - the site can go down. It happened already.
 - the site can change, it which case we would have to change our
-  sraper too. This can be catched early with automated and frequent
-  tests (work ongoing).
+  sraper too. To catch this early we run automatic tests every
+  week. The actual websites didn't change in 3 years.
 
 
 # Changelog
+
+- remove deprecated import from ods/csv feature.
 
 ## 0.2.1
 
