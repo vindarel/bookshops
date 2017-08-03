@@ -50,7 +50,7 @@ class testScraperBase(unittest.TestCase):
             # note: pyyaml doesn't load strings as unicode
             # u"". There's a hack out there, but unittest is clever
             # enough.
-            self.datatest = yaml.load(f.read())
+            self.datatest = yaml.safe_load(f.read())
 
     def tearDown(self):
         pass
