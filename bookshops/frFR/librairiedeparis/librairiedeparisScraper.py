@@ -24,7 +24,6 @@ from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.scraperUtils import Timer
-from bookshops.odslookup.odsutils import rmPunctuation
 
 logging.basicConfig(level=logging.ERROR) #to manage with ruche
 requests_cache.install_cache()
