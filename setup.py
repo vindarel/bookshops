@@ -60,10 +60,6 @@ setup(
         ],
     },
 
-    tests_require = {
-
-    },
-
     classifiers = [
         "Environment :: Web Environment",
         "Environment :: Console",
