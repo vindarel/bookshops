@@ -302,6 +302,7 @@ class Scraper(object):
             stacktraces.append("The remote source has a problem, we can not connect to it.")
 
         for product in product_list:
+            authors = self._authors(product)
             b = {}
             b["data_source"] = self.SOURCE_NAME
             b["isbn"] = self._isbn(product) # missing
@@ -310,7 +311,8 @@ class Scraper(object):
             b["date_publication"] = self._date_publication(product)
             b["search_url"] = self.url
             b["search_terms"] = self.query
-            b["authors"] = self._authors(product)
+            b["authors"] = authors
+            b["authors_repr"] = ", ".join(authors)
             b["price"] = self._price(product)
             b["description"] = self._description(product)
             b["img"] = self._img(product)
