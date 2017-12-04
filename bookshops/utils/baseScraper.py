@@ -303,6 +303,7 @@ class Scraper(object):
 
         for product in product_list:
             authors = self._authors(product)
+            publishers = self._publisher(product)
             b = {}
             b["data_source"] = self.SOURCE_NAME
             b["isbn"] = self._isbn(product) # missing
@@ -316,7 +317,8 @@ class Scraper(object):
             b["price"] = self._price(product)
             b["description"] = self._description(product)
             b["img"] = self._img(product)
-            b["publishers"] = self._publisher(product)
+            b["publishers"] = publishers
+            b["pubs_repr"] = ", ".join(publishers)
             b["date"] = self._date(product)
             b["availability"] = self._availability(product)
             b["card_type"] = self.TYPE_BOOK

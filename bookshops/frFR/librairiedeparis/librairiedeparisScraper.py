@@ -247,6 +247,7 @@ class Scraper(baseScraper):
         # nbr_results = self._nbr_results()
         for product in product_list:
             authors = self._authors(product)
+            publishers = [self._publisher(product)]
             b = addict.Dict()
             b.search_terms = self.query
             b.data_source = self.SOURCE_NAME
@@ -258,7 +259,8 @@ class Scraper(baseScraper):
             b.authors = authors
             b.authors_repr = ", ".join(authors)
             b.price = self._price(product)
-            b.publishers = [self._publisher(product)]
+            b.publishers = publishers
+            b.pubs_repr = ", ".join(publishers)
             b.card_type = self.TYPE_BOOK
             b.img = self._img(product)
             b.summary = self._description(product)
