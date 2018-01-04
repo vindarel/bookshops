@@ -16,6 +16,7 @@ setup(
     packages = find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires = [
+        "pip==9",
         "requests==2.7",
         "requests_cache==0.4",
         "beautifulsoup4",
