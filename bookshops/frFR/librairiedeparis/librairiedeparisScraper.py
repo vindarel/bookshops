@@ -113,7 +113,7 @@ class Scraper(baseScraper):
                 logging.info(u'Nb of results: ' + nbr)
                 return int(nbr)
         except Exception, e:
-            print "\nError fetching the nb of results:", e
+            logging.info(u"Could not fetch the nb of results: {}".format(e))
 
     @catch_errors
     def _details_url(self, product):

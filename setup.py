@@ -58,6 +58,7 @@ setup(
             "libros = bookshops.esES.casadellibro.casadellibroScraper:run",
             "bucher = bookshops.deDE.buchlentner.buchlentnerScraper:run",
             "discogs = bookshops.all.discogs.discogsScraper:run",
+            "movies = bookshops.all.momox.momox:run",
         ],
     },
 

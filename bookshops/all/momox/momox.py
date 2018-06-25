@@ -45,8 +45,8 @@ class Scraper(baseScraper):
         self.SOURCE_URL_SEARCH = u"https://www.momox-shop.fr/films-C09/?fcIsSearch=1&searchparam="
         #: advanced url (searcf for isbns)
         self.SOURCE_URL_ADVANCED_SEARCH = u""
-        #: the url to search for an isbn.
-        self.SOURCE_URL_ISBN_SEARCH = None
+        #: the url to search for an isbn: no change.
+        self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
         self.URL_END = u""
         self.TYPE_BOOK = u"dvd"
@@ -89,7 +89,7 @@ class Scraper(baseScraper):
                 logging.info(u'Nb of results: {}'.format(nbr))
                 return self.nbr_result
         except Exception, e:
-            logging.info("\nError fetching the nb of results:", e)
+            logging.info(u"Could not fetch the nb of results: {}".format(e))
 
     @catch_errors
     def _details_url(self, product):
@@ -132,17 +132,33 @@ class Scraper(baseScraper):
     def _isbn(self, product):
         pass
 
+    @catch_errors
+    def _details(self, product):
+        """
+        Information on a product's page.
+        Exple: https://www.momox-shop.fr/lea-fehner-les-ogres-fr-import-dvd-M0B01FV3FM3K.html
+
+        - product: parsed html (soup).
+        """
+        title = product.find(id="test_product_name").text.strip()
+        img = product.find(id="product_img").attrs['src']
+        # TODO: authors
+        return {
+            'isbn': self.isbn,
+            'title': title,
+            'img': img,
+        }
+
     def search(self, *args, **kwargs):
-        """Searches books. Returns a list of books.
-
-        From keywords, fires a query on decitre and parses the list of
-        results to retrieve the information of each book.
-
-        args: liste de mots, rajoutés dans le champ ?q=
-
+        """
+        Searches DVDs. Returns a tuple: list of DVDs (dicts), stacktraces.
         """
         bk_list = []
         stacktraces = []
+
+        if self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE:
+            card = self._details(self.soup)
+            return [card], stacktraces
 
         product_list = self._product_list()
         nbr_results = self._nbr_results()
@@ -163,6 +179,7 @@ class Scraper(baseScraper):
             bk_list.append(b.to_dict())
 
         return bk_list, stacktraces
+
 
 @annotate(words=clize.Parameter.REQUIRED, review='r')
 @autokwoargs()

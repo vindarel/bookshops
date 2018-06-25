@@ -180,7 +180,7 @@ class Scraper(object):
                 # Some sites use query parameters to set the isbn
                 # (decitre), others treat it like a normal one (casa
                 # del libro).
-                if self.ISBN_QPARAM:
+                if self.ISBN_QPARAM not in ["", u""]:
                     self.query = "&{}={}".format(self.ISBN_QPARAM, isbns[0])
                 else:
                     #xxx we could search for many isbns at once.
