@@ -1,5 +1,5 @@
 
-# Web scraping to get book information
+# Bibliographic search of BOOKS, CDs and DVDs
 
 This library is to get book information. We can search with **keywords**,
 with the **isbn**, with an **advanced search**, and do **pagination**.
@@ -9,51 +9,18 @@ We get the data from existing websites. We scrape:
 - for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete). See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
 - for Spain: http://www.casadellibro.com ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=spanish_scraper)
 - for Germany: http://www.buchlentner.de ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=german_scraper)
-- actually we like music too: https://www.discogs.com
 
-we get: the title and authors, the price, the publisher(s), the cover, etc
+That's not all:
+
+- we like music: https://www.discogs.com
+- and DVDs: https://www.momox-shop.fr
+
+We get: the title and authors, the price, the publisher(s), the cover, etc
 
 We can sometimes search for **reviews of a book** (currently, french
 books, that we get from [lmda.net](http://www.lmda.net)).
 
 <img src="cli-search.png"</img>
-
-### Accepted format and columns
-
-We can read ods and csv files.
-
-- a file with an "isbn" and "quantity" column,
-- a file with columns "title", "publisher", "isbn" (optionnal in this
-  case), "shelf", "distributor", "quantity". There is **no** "price"
-  column. "authors" is optionnal (it can help to fetch the correct
-  book).
-
-If the file has no headers, use the "odsettings.py" configuration file
-(in particular, to set the csv delimiter, either "," or ";").
-
-
-## Why not Amazon ?
-
-Amazon kills the book industry and its employees.  But moreover, we
-can add value to our results. We can link to a good and independent
-bookshop from within our application, we could command books from it,
-we could say if it has exemplaries in stock or not, etc. And… we learn
-a lot in doing this !
-
-Technically speaking, the Amazon API web service can be too limitating
-and not appropriate. One must register to Amazon Product Advertising
-and to AWS, and the requests rate is limited to 1 request per second.
-
-## Why not Google books ?
-
-It has very few data.
-
-## Why not the BNF (Bibliothèque Nationale de France) ?
-
-Because, for bookshops, we need recent books (they enter the BNF
-database after a few months), up to date information. There isn't a
-lot of tools either.
-
 
 # Install
 
@@ -70,6 +37,7 @@ You can try this lib on the command line with the following commands:
 - `libros`: spanish books
 - `bucher`: german books
 - `discogs`: CDs
+- `movies`: DVDs
 - come and ask for more :)
 
 For example:
@@ -109,6 +77,49 @@ You can search ``ed:agone`` to search for a specific publisher.
 We do pagination:
 
     scraper = frenchScraper("search keywords", PAGE=2)
+
+
+# Importing a list of books
+
+    This functionality is deprecated.
+
+## Accepted format and columns
+
+
+We can read ods and csv files.
+
+- a file with an "isbn" and "quantity" column,
+- a file with columns "title", "publisher", "isbn" (optionnal in this
+  case), "shelf", "distributor", "quantity". There is **no** "price"
+  column. "authors" is optionnal (it can help to fetch the correct
+  book).
+
+If the file has no headers, use the "odsettings.py" configuration file
+(in particular, to set the csv delimiter, either "," or ";").
+
+
+## Why not Amazon ?
+
+Amazon kills the book industry and its employees.  But moreover, we
+can add value to our results. We can link to a good and independent
+bookshop from within our application, we could command books from it,
+we could say if it has exemplaries in stock or not, etc. And… we learn
+a lot in doing this !
+
+Technically speaking, the Amazon API web service can be too limitating
+and not appropriate. One must register to Amazon Product Advertising
+and to AWS, and the requests rate is limited to 1 request per second.
+
+## Why not Google books ?
+
+It has very few data.
+
+## Why not the BNF (Bibliothèque Nationale de France) ?
+
+Because, for bookshops, we need recent books (they enter the BNF
+database after a few months), up to date information. There isn't a
+lot of tools either.
+
 
 
 # Develop and test
