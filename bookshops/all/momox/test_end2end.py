@@ -25,14 +25,13 @@ import unittest
 
 from bookshops.utils.testScraperBase import testScraperBase
 
-from librairiedeparisScraper import Scraper
-from librairiedeparisScraper import postSearch
+from momox import Scraper
 
 class LiveTest(testScraperBase):
 
     def __init__(self, *args, **kwargs):
         kwargs['scraper'] = Scraper
-        kwargs['postSearch'] = postSearch
+        kwargs['postSearch'] = None
         super(LiveTest, self).__init__(*args, **kwargs)
         self.scraper = Scraper
 

@@ -210,6 +210,7 @@ class Scraper(object):
         if self.req.history and self.req.history[0].status_code == 302:
             log.info("First request: we got redirected")
             self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE = True
+            self.url_product_page = self.req.url
 
         self.soup = BeautifulSoup(self.req.content, "lxml")
 

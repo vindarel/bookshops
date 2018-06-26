@@ -147,6 +147,7 @@ class Scraper(baseScraper):
             'isbn': self.isbn,
             'title': title,
             'img': img,
+            'details_url': self.url_product_page,
         }
 
     def search(self, *args, **kwargs):

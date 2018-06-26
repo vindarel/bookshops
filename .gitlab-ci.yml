@@ -31,3 +31,9 @@ german_scraper:
     - triggers
   script:
     - make germanscraper
+
+movies_scraper:
+  only:
+    - triggers
+  script:
+    - make movies

@@ -67,7 +67,8 @@ class testScraperBase(unittest.TestCase):
                 dataresults = bktest["search"]["results"]
                 filtered_res = filterAttribute("title", dataresults, bklist)
                 filtered_res = filterAttribute("ean", dataresults, filtered_res)
-                filtered_res = filterAttribute("price", dataresults, filtered_res)
+                if 'price' in dataresults:
+                    filtered_res = filterAttribute("price", dataresults, filtered_res)
 
                 # Test the attributes.
                 self.assertTrue(filtered_res)
@@ -80,7 +81,11 @@ class testScraperBase(unittest.TestCase):
                              "date_publication",
                              "details_url"]:
                     # Better: use nose's test generators to test all attributes at once.
-                    self.assertEqual(filtered_res[0].get(attr), dataresults.get(attr))
+                    if attr in dataresults:
+                        print "Checking {}.".format(attr)
+                        self.assertEqual(filtered_res[0].get(attr), dataresults.get(attr))
+                    else:
+                        print "Not checking {}".format(attr)
 
     def testPostSearch(self):
         for bktest in self.datatest:

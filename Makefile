@@ -21,7 +21,10 @@ spanishscraper: casadellibro
 germanscraper:
 	@cd bookshops/deDE/buchlentner/ && python test_end2end.py
 
-testscrapers: decitre casadellibro librairiedeparis
+movies:
+	@cd bookshops/all/momox/ && python test_end2end.py
+
+testscrapers: decitre casadellibro librairiedeparis movies
 
 build:
 	# build a source distribution
