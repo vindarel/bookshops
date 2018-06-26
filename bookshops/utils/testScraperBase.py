@@ -42,11 +42,12 @@ class testScraperBase(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         self.scraper = kwargs.pop('scraper')
         self.postSearch = kwargs.pop('postSearch')
+        # Full path to the yaml defining tests. Must be overwritten.
+        self.tfile = "test_scraper.yaml"
         super(testScraperBase, self).__init__(*args, **kwargs)
 
     def setUp(self):
-        tfile = "test_scraper.yaml"
-        with open(tfile, "rb") as f:
+        with open(self.tfile, "rb") as f:
             # note: pyyaml doesn't load strings as unicode
             # u"". There's a hack out there, but unittest is clever
             # enough.
