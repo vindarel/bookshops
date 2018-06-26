@@ -21,7 +21,6 @@
 scrape stuff on the existing website.
 
 """
-import sys
 import os
 import unittest
 
@@ -37,10 +36,17 @@ class LiveTest(testScraperBase):
         kwargs['postSearch'] = postSearch
         super(LiveTest, self).__init__(*args, **kwargs)
         self.scraper = Scraper
+        cur_file = os.path.abspath(__file__)
+        dirname = os.path.dirname(cur_file)
+        self.tfile = os.path.join(dirname, "test_scraper.yaml")
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(LiveTest)
     # Warning, we manually added the tests.
     suite.addTest(LiveTest('testSearch'))
     suite.addTest(LiveTest('testPostSearch'))
-    unittest.TextTestRunner().run(suite)
+    res = unittest.TextTestRunner().run(suite)
+    if res.wasSuccessful():
+        exit(0)
+    else:
+        exit(1)

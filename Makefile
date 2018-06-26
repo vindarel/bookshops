@@ -24,7 +24,7 @@ germanscraper:
 movies:
 	@cd bookshops/all/momox/ && python test_end2end.py
 
-testscrapers: decitre casadellibro librairiedeparis movies
+testscrapers: spanishscraper germanscraper librairiedeparis movies
 
 build:
 	# build a source distribution
