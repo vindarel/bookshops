@@ -86,44 +86,43 @@ class Scraper(baseScraper):
         return page_qparam
 
     def _product_list(self):
-        # The table doesn't have its css classes 'even' and 'odd' yet.
         try:
-            plist = self.soup.find(class_='tab_listlivre')
+            plist = self.soup.find(class_='resultsList')
             if not plist:
                 logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
                 return []
-            plist = plist.find_all('tr')
+            plist = plist.find_all('li', recursive=False)  # only direct <li> children.
+            # logging.debug(u"found plist: {}".format(len(plist)))
             return plist
         except Exception as e:
             logging.error("Error while getting product list. Will return []. Error: {}".format(e))
             return []
 
-    @catch_errors
     def _nbr_results(self):
         pass
         try:
-            nbr_resultl_list = self.soup.find_all('div', class_='nbr_result')
+            nbr_resultl_list = self.soup.find_all('div', class_='result_position')
             nbr_result = nbr_resultl_list[0].text.strip()
-            res = re.search('\d+', nbr_result)
+            res = nbr_result.split('sur')[-1]
             if not res:
                 print 'Error matching nbr_result'
             else:
-                nbr = res.group(0)
-                self.nbr_result = nbr
-                logging.info(u'Nb of results: ' + nbr)
-                return int(nbr)
+                nbr = int(res.strip())
+                self.NBR_RESULTS = nbr
+                logging.info(u'Nb of results: {}'.format(nbr))
+                return nbr
         except Exception, e:
             logging.info(u"Could not fetch the nb of results: {}".format(e))
 
     @catch_errors
     def _details_url(self, product):
-        details_url = product.find(class_="titre").a.attrs["href"].strip()
+        details_url = product.find(class_="livre_titre").a.attrs["href"].strip()
         details_url = self.SOURCE_URL_BASE + details_url
         return details_url
 
     @catch_errors
     def _title(self, product):
-        title = product.find(class_='titre').text.strip()
+        title = product.find(class_='livre_titre').text.strip()
         logging.info(u'title: {}'.format(title))
         return title
 
@@ -131,8 +130,9 @@ class Scraper(baseScraper):
     def _authors(self, product):
         """Return a list of str.
         """
-        authors = product.find(class_='auteurs').text # xxx many authors ?
+        authors = product.find(class_='livre_auteur').text # xxx many authors ?
         authors = authors.split('\n')
+        # TODO: multiple authors
         authors = filter(lambda it: it != u"", authors)
         authors = [it.strip() for it in authors]
         logging.info(u'authors: '+ ', '.join(a for a in authors))
@@ -140,7 +140,7 @@ class Scraper(baseScraper):
 
     @catch_errors
     def _img(self, product):
-        img = product.find(class_='visu').img['src']
+        img = product.find(class_='zone_image').a.img['data-original']
         return img
 
     @catch_errors
@@ -151,7 +151,7 @@ class Scraper(baseScraper):
     def _price(self, product):
         "The real price, without discounts"
         try:
-            price = product.find(class_='prix_indicatif').text.strip()
+            price = product.find(class_='item_prix').text.strip()
             price = priceFromText(price)
             price = priceStr2Float(price)
             return price
@@ -163,7 +163,11 @@ class Scraper(baseScraper):
         """
         Return: str
         """
-        isbn = product.find(class_='gencod').text.strip()
+        res = product.find(class_="editeur-collection-parution").text.split('\n')
+        isbn = res[-2].strip()
+        if not is_isbn(isbn):
+            res = filter(lambda it: is_isbn(it), res)
+            isbn = res[0]
         return isbn
 
     @catch_errors
@@ -174,7 +178,9 @@ class Scraper(baseScraper):
 
     @catch_errors
     def _details(self, product):
+        # looks deprecated.
         try:
+            logging.warning("not up to date. Looks like unused anyway.")
             details_soup = product.getDetailsSoup()
             tech = details_soup.find(class_='technic')
             li = tech.find_all('li')
@@ -201,14 +207,17 @@ class Scraper(baseScraper):
 
     @catch_errors
     def _date_publication(self, product):
-        date_publication = product.find(class_="date_parution").text.strip()
+        date_publication = product.find(class_="MiseEnLigne")
+        if date_publication:
+            # not available sometimes.
+            date_publication = date_publication.text.strip()
         return date_publication
 
     @catch_errors
     def _availability(self, product):
         """Return: string.
         """
-        availability = product.find(class_='disponibilite')
+        availability = product.find(class_='item_stock')
         if availability:
             availability = availability.text.strip()
         return availability
@@ -220,13 +229,14 @@ class Scraper(baseScraper):
 
         - return: str or None
         """
-        FMT_POCKET = "Format Poche"
-        FMT_LARGE = "Grand Format"
-        fmt = product.find(class_='genre')
+        FMT_POCKET = "Format poche"
+        FMT_LARGE = "Grand format"
+        fmt = product.find(class_='item_format')
+        fmt = fmt.text.strip()
         res = None
-        if FMT_LARGE in fmt.text:
+        if FMT_LARGE.upper() in fmt.upper():
             res = FMT_LARGE
-        elif FMT_POCKET in fmt.text:
+        elif FMT_POCKET.upper() in fmt.upper():
             res = FMT_POCKET
 
         return res
@@ -244,7 +254,7 @@ class Scraper(baseScraper):
         stacktraces = []
 
         product_list = self._product_list()
-        # nbr_results = self._nbr_results()
+        nbr_results = self._nbr_results()
         for product in product_list:
             authors = self._authors(product)
             publishers = [self._publisher(product)]
@@ -393,7 +403,7 @@ def main(review=False, *words):
         return
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print " Nb results: {}".format(len(bklist))
+    print " Nb results: {}/{}".format(len(bklist), scrap.NBR_RESULTS)
     bklist = [postSearch(it) for it in bklist]
 
     # Get reviews:

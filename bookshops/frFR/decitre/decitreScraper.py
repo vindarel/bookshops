@@ -243,7 +243,6 @@ def postSearch(card, isbn=None):
             isbn = isbn_cleanup(isbn)
 
             if not is_isbn(isbn):
-                import ipdb; ipdb.set_trace()
                 log.error("The isbn {} is not valid. Return nothing.".format(isbn))
                 isbn = given_isbn or None
 

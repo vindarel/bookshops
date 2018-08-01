@@ -126,6 +126,9 @@ class Scraper(object):
 
         """
 
+        self.USER_AGENT = "Abelujo"
+        self.HEADERS = {'user-agent': self.USER_AGENT}
+
         #: When we search for an isbn, it's possible the website lend
         #us not to the default search results page, but redirect us to
         #the product page instead. In that case the search() method,
@@ -204,9 +207,9 @@ class Scraper(object):
 
                 self.url += self.URL_END + self.pagination()
 
-        log.warning('search url: %s' % self.url)
+        log.debug('search url: %s' % self.url)
         # requests_cache.disabled()
-        self.req = requests.get(self.url)
+        self.req = requests.get(self.url, headers=self.HEADERS)
         if self.req.history and self.req.history[0].status_code == 302:
             log.info("First request: we got redirected")
             self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE = True
