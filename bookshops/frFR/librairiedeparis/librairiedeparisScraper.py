@@ -146,6 +146,7 @@ class Scraper(baseScraper):
     @catch_errors
     def _publisher(self, product):
         pub = product.find(class_="editeur").text.split('-')[0].strip()
+        # TODO: multiple publishers ?
         return pub
 
     def _price(self, product):
@@ -257,7 +258,7 @@ class Scraper(baseScraper):
         nbr_results = self._nbr_results()
         for product in product_list:
             authors = self._authors(product)
-            publishers = [self._publisher(product)]
+            publishers = self._publisher(product)
             b = addict.Dict()
             b.search_terms = self.query
             b.data_source = self.SOURCE_NAME
