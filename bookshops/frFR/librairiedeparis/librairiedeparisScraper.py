@@ -145,9 +145,12 @@ class Scraper(baseScraper):
 
     @catch_errors
     def _publisher(self, product):
+        """
+        Return a list of publishers (strings).
+        """
         pub = product.find(class_="editeur").text.split('-')[0].strip()
         # TODO: multiple publishers ?
-        return pub
+        return [pub]
 
     def _price(self, product):
         "The real price, without discounts"
