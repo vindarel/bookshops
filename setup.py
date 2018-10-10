@@ -13,7 +13,7 @@ except (IOError, OSError, ImportError):
 
 setup(
     name = "bookshops",
-    version = "0.2.1",
+    version = "0.3.1",
     packages = find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires = [
@@ -38,6 +38,7 @@ setup(
 
     tests_require = [
         "twine",  # pypi upload
+        "pypandoc",  # format the long description
     ],
 
     package_data = {
