@@ -1,24 +1,20 @@
 
 # Bibliographic search of BOOKS, CDs and DVDs
 
-This library is to get book information. We can search with **keywords**,
-with the **isbn**, with an **advanced search**, and do **pagination**.
+This library was initially to search for bibliographic data of books,
+and it was expanded for **DVDs** and **CDs**. We can search with
+**keywords**, with the **isbn** (so than we can use barcode scanners),
+with some advanced search, and we have pagination.
 
 We get the data from existing websites. We scrape:
 
 - for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete). See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
 - for Spain: http://www.casadellibro.com ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=spanish_scraper)
 - for Germany: http://www.buchlentner.de ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=german_scraper)
+- for DVDs: https://www.momox-shop.fr
+- and for CDs: https://www.discogs.com (may need more testing)
 
-That's not all:
-
-- we like music: https://www.discogs.com
-- and DVDs: https://www.momox-shop.fr
-
-We get: the title and authors, the price, the publisher(s), the cover, etc
-
-We can sometimes search for **reviews of a book** (currently, french
-books, that we get from [lmda.net](http://www.lmda.net)).
+We retrieve: the title and authors, the price, the publisher(s), the cover,...
 
 <img src="cli-search.png"</img>
 
@@ -76,7 +72,7 @@ You can search ``ed:agone`` to search for a specific publisher.
 
 We do pagination:
 
-    scraper = frenchScraper("search keywords", PAGE=2)
+    scraper = frenchScraper("search keywords", page=2)
 
 
 # Importing a list of books
