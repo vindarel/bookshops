@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
@@ -20,20 +21,19 @@ setup(
         "requests==2.7",
         "requests_cache==0.4",
         "beautifulsoup4",
-        "isbnlib<4", # useful tools to manipulate and get isbn
-        "lxml==3.5", # parsing
-        "html5lib==1.0b8", # parsing. Newer version breaks bs4. see https://bugs.launchpad.net/beautifulsoup/+bug/1603299
+        "isbnlib<4",  # useful tools to manipulate and get isbn
+        "lxml==3.5",  # parsing
+        "html5lib==1.0b8",  # parsing. Newer version breaks bs4. see https://bugs.launchpad.net/beautifulsoup/+bug/1603299
         "toolz",     # functional utils
-        "tabulate", 
+        "tabulate",
         "addict",    # fancy dict access
-        "termcolor", # colored print
-        "unidecode", # string clean up 
+        "termcolor",  # colored print
+        "unidecode",  # string clean up
         "distance",  # between two strings
         "clize==3",  # quick and easy cli args
         "pyyaml==3.11",
         "tqdm",      # progress bar
-        "termcolor", # terminal color
-        "goose-extractor", # extract summaries and meta descriptions from webpages
+        "termcolor",  # terminal color
     ],
 
     package_data = {
