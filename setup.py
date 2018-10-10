@@ -36,6 +36,10 @@ setup(
         "termcolor",  # terminal color
     ],
 
+    tests_require = [
+        "twine",  # pypi upload
+    ],
+
     package_data = {
         # If any package contains *.txt or *.rst files, include them:
         # '': ['*.txt', '*.rst'],
