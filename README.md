@@ -16,7 +16,7 @@ We get the data from existing websites. We scrape:
 
 We retrieve: the title and authors, the price, the publisher(s), the cover,...
 
-<img src="cli-search.png"</img>
+![](cli-search.png)
 
 # Install
 
