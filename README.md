@@ -14,7 +14,11 @@ We get the data from existing websites. We scrape:
 - for DVDs: https://www.momox-shop.fr
 - and for CDs: https://www.discogs.com (may need more testing)
 
-We retrieve: the title and authors, the price, the publisher(s), the cover,...
+We retrieve: the title and authors, the price, the isbn, the publisher(s), the cover,...
+
+This library forms the heart of
+[Abelujo](https://gitlab.com/vindarel/abelujo/), a free software for
+bookshops.
 
 ![](cli-search.png)
 
