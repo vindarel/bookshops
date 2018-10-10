@@ -104,7 +104,8 @@ a lot in doing this !
 
 Technically speaking, the Amazon API web service can be too limitating
 and not appropriate. One must register to Amazon Product Advertising
-and to AWS, and the requests rate is limited to 1 request per second.
+and to AWS, and the requests rate is limited to 1 request per
+second. Also, it changes way more often than our resailers' websites so far.
 
 ## Why not Google books ?
 
@@ -113,9 +114,7 @@ It has very few data.
 ## Why not the BNF (Bibliothèque Nationale de France) ?
 
 Because, for bookshops, we need recent books (they enter the BNF
-database after a few months), up to date information. There isn't a
-lot of tools either.
-
+database after a few months), and the price.
 
 
 # Develop and test
