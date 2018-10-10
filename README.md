@@ -145,7 +145,14 @@ This is webscraping, so it doesn't go without pitfalls:
 
 # Changelog
 
-- remove deprecated import from ods/csv feature.
+## 0.3.1
+
+- added search of DVDs
+- updated french scapers (first time needed in four years).
+
+## 0.2.2
+
+- remove deprecated import from ods/csv feature. Might do a simpler one in the future.
 
 ## 0.2.1
 
