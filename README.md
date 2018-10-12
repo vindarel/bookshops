@@ -1,4 +1,3 @@
-
 # Bibliographic search of BOOKS, CDs and DVDs
 
 This library was initially to search for bibliographic data of books,
@@ -143,7 +142,7 @@ This is webscraping, so it doesn't go without pitfalls:
 - the site can go down. It happened already.
 - the site can change, it which case we would have to change our
   sraper too. To catch this early we run automatic tests every
-  week. The actual websites didn't change in 3 years.
+  week. The actual website didn't change in 3 years.
 
 
 # Changelog
@@ -151,7 +150,7 @@ This is webscraping, so it doesn't go without pitfalls:
 ## 0.3.1
 
 - added search of DVDs
-- updated french scapers (first time needed in four years).
+- updated french scrapers (first time needed in four years).
 
 ## 0.2.2
 
