@@ -78,37 +78,19 @@ We do pagination:
     scraper = frenchScraper("search keywords", page=2)
 
 
-# Importing a list of books
-
-    This functionality is deprecated.
-
-## Accepted format and columns
-
-
-We can read ods and csv files.
-
-- a file with an "isbn" and "quantity" column,
-- a file with columns "title", "publisher", "isbn" (optionnal in this
-  case), "shelf", "distributor", "quantity". There is **no** "price"
-  column. "authors" is optionnal (it can help to fetch the correct
-  book).
-
-If the file has no headers, use the "odsettings.py" configuration file
-(in particular, to set the csv delimiter, either "," or ";").
-
+# Why not… ?
 
 ## Why not Amazon ?
 
 Amazon kills the book industry and its employees.  But moreover, we
 can add value to our results. We can link to a good and independent
 bookshop from within our application, we could command books from it,
-we could say if it has exemplaries in stock or not, etc. And… we learn
-a lot in doing this !
+we could say if it has exemplaries in stock or not, etc.
 
-Technically speaking, the Amazon API web service can be too limitating
+Technically speaking, the Amazon API web service can be too limiting
 and not appropriate. One must register to Amazon Product Advertising
-and to AWS, and the requests rate is limited to 1 request per
-second. Also, it changes way more often than our resailers' websites so far.
+and to AWS, making it more difficult for deployment or independant
+users, and it changes way more often than our resailers' websites.
 
 ## Why not Google books ?
 
