@@ -50,11 +50,11 @@ setup(
 
     # metadata for upload to PyPI
     author = "vindarel",
-    author_email = "ehvince@mailz.org",
-    description = "Get book information (isbn or search) from real bookstores.",
+    author_email = "vindarel@mailz.org",
+    description = "Get book, dvd and cd information (isbn or search) from real bookstores.",
     long_description = long_description,
     license = "GNU LGPLv3",
-    keywords = "bookshop bookstore library book isbn ean webscraping",
+    keywords = "bookshop bookstore library book dvd isbn ean webscraping",
     url = "https://gitlab.com/vindarel/bookshops",
 
     entry_points = {
