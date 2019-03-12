@@ -81,7 +81,7 @@ class Scraper(baseScraper):
 
     @catch_errors
     def _title(self, product):
-        return product.find(class_="title-link").text.strip()
+        return product.find(class_="title-link").text.strip().capitalize()
 
     @catch_errors
     def _details_url(self, product):
@@ -100,7 +100,7 @@ class Scraper(baseScraper):
     def _authors(self, product):
         authors = []
         authors.append(product.find(class_="mod-libros-author").text.strip())
-        return authors
+        return authors.capitalize()
 
     @catch_errors
     def _description(self, product):

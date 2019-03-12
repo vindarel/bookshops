@@ -74,7 +74,7 @@ class ProductPage(object):
     @catch_errors
     def _title(self, product):
         title = product.find(class_="productTitleHeader").text.strip()
-        return title
+        return title.capitalize()
 
     @catch_errors
     def _nbr_results(self):
@@ -93,7 +93,7 @@ class ProductPage(object):
     @catch_errors
     def _authors(self, product):
         authors = []
-        authors = product.find(class_="productInfo").find_all('p')[2].text.strip()
+        authors = product.find(class_="productInfo").find_all('p')[2].text.strip().capitalize()
         return [authors]
 
     @catch_errors

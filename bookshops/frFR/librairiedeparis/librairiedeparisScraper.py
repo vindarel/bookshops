@@ -124,7 +124,7 @@ class Scraper(baseScraper):
     def _title(self, product):
         title = product.find(class_='livre_titre').text.strip()
         logging.info(u'title: {}'.format(title))
-        return title
+        return title.capitalize()
 
     @catch_errors
     def _authors(self, product):
@@ -134,7 +134,7 @@ class Scraper(baseScraper):
         authors = authors.split('\n')
         # TODO: multiple authors
         authors = filter(lambda it: it != u"", authors)
-        authors = [it.strip() for it in authors]
+        authors = [it.strip().capitalize() for it in authors]
         logging.info(u'authors: '+ ', '.join(a for a in authors))
         return authors
 

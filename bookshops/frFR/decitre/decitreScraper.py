@@ -96,7 +96,7 @@ class Scraper(baseScraper):
     def _title(self, product):
         # title = product.find_all('div', class_='h1')[0]
         title = product.find_all('div', class_='h1')[0]
-        title = title.text.strip()
+        title = title.text.strip().capitalize()
         logging.info('title:'+ title)
         return title
 
@@ -105,7 +105,7 @@ class Scraper(baseScraper):
         authors = []
         authors_l = product.find_all('div', class_='authors')
         for a in authors_l:
-            aut = a.find('a').text.strip()
+            aut = a.find('a').text.strip().capitalize()
             authors.append(aut)
         logging.info('authors: '+ ', '.join(a for a in authors))
         return authors
