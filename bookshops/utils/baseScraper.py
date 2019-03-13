@@ -307,6 +307,11 @@ class Scraper(object):
 
         for product in product_list:
             authors = self._authors(product)
+            authors_repr = ""
+            if isinstance(authors_repr, list):
+                authors_repr = [", ".join(authors_repr)]
+            else:
+                authors_repr = authors
             publishers = self._publisher(product)
             b = {}
             b["data_source"] = self.SOURCE_NAME
@@ -317,7 +322,7 @@ class Scraper(object):
             b["search_url"] = self.url
             b["search_terms"] = self.query
             b["authors"] = authors
-            b["authors_repr"] = ", ".join(authors)
+            b["authors_repr"] = authors_repr
             b["price"] = self._price(product)
             b["description"] = self._description(product)
             b["img"] = self._img(product)
