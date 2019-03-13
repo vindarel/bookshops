@@ -99,8 +99,8 @@ class Scraper(baseScraper):
     @catch_errors
     def _authors(self, product):
         authors = []
-        authors.append(product.find(class_="mod-libros-author").text.strip())
-        return authors.capitalize()
+        authors.append(product.find(class_="mod-libros-author").text.strip().capitalize())
+        return authors
 
     @catch_errors
     def _description(self, product):
