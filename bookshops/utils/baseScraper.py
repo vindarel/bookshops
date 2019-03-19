@@ -312,7 +312,7 @@ class Scraper(object):
                 authors_repr = [", ".join(authors_repr)]
             else:
                 authors_repr = authors
-            publishers = self._publisher(product)
+            publishers = self._publisher(product) or []
             b = {}
             b["data_source"] = self.SOURCE_NAME
             b["isbn"] = self._isbn(product) # missing
