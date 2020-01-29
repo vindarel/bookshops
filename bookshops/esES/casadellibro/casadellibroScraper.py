@@ -27,12 +27,10 @@ from bs4 import BeautifulSoup
 import logging
 import os
 import requests
-import requests_cache
 import sys
 
 import addict
 import clize
-import requests_cache
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
@@ -44,7 +42,6 @@ from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.decorators import catch_errors
 
-requests_cache.install_cache()
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
 

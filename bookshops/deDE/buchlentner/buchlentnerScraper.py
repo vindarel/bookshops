@@ -9,7 +9,6 @@ import sys
 import addict
 import clize
 import requests
-import requests_cache
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
@@ -23,8 +22,6 @@ from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 
 logging.basicConfig(level=logging.ERROR) #to manage with ruche
-requests_cache.install_cache()
-
 
 # logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)

@@ -10,13 +10,11 @@ import sys
 import addict
 import clize
 import requests
-import requests_cache
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
 logging.basicConfig(level=logging.INFO) #to manage with ruche
-requests_cache.install_cache()
 
 # Add "datasources" to sys.path (independant from Django project,
 # to clean up for own module).

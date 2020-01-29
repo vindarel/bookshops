@@ -10,7 +10,6 @@ import sys
 import addict
 import clize
 import requests
-import requests_cache
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
@@ -26,8 +25,6 @@ from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.scraperUtils import Timer
 
 logging.basicConfig(level=logging.ERROR) #to manage with ruche
-requests_cache.install_cache()
-
 
 # logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
@@ -130,7 +127,7 @@ class Scraper(baseScraper):
     def _authors(self, product):
         """Return a list of str.
         """
-        authors = product.find(class_='livre_auteur').text # xxx many authors ?
+        authors = product.find(class_='livre_auteur').text # xxx many authors ? see list_authors
         authors = authors.split('\n')
         # TODO: multiple authors
         authors = filter(lambda it: it != u"", authors)

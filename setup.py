@@ -19,7 +19,6 @@ setup(
     install_requires = [
         "pip==9",
         "requests==2.21",
-        "requests_cache==0.4",
         "beautifulsoup4",
         "isbnlib<4",  # useful tools to manipulate and get isbn
         "lxml==3.5",  # parsing

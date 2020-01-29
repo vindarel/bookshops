@@ -22,14 +22,11 @@ import logging
 import clize
 import lxml.html
 import requests
-import requests_cache
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.scraperUtils import Timer
-
-requests_cache.install_cache()
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)

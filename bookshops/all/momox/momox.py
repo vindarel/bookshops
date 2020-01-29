@@ -10,7 +10,6 @@ import sys
 import addict
 import clize
 import requests
-import requests_cache
 # import timedelta
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
@@ -28,8 +27,6 @@ from bookshops.utils.scraperUtils import Timer
 
 logging.basicConfig(level=logging.ERROR) #to manage with ruche
 
-# expire_after = timedelta(days=30)
-# requests_cache.install_cache(expire_after=expire_after)
 
 class Scraper(baseScraper):
 

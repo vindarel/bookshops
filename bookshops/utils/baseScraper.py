@@ -25,7 +25,6 @@ import logging
 import os
 import sys
 import requests
-import requests_cache
 from bs4 import BeautifulSoup
 
 from bookshops.utils.scraperUtils import is_isbn
@@ -34,7 +33,6 @@ from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.decorators import catch_errors
 
-requests_cache.install_cache()
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
@@ -208,7 +206,6 @@ class Scraper(object):
                 self.url += self.URL_END + self.pagination()
 
         log.debug('search url: %s' % self.url)
-        # requests_cache.disabled()
         self.req = requests.get(self.url, headers=self.HEADERS)
         if self.req.history and self.req.history[0].status_code == 302:
             log.info("First request: we got redirected")

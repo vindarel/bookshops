@@ -18,13 +18,8 @@
 
 import os
 import requests
-import requests_cache
 import sys
 import unittest
-
-# requests_cache.install_cache("memory")  # default is sqlite. I want to see API changes.
-# Activate sqlite in dev mode ?
-requests_cache.install_cache()
 
 common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
