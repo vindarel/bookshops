@@ -7,7 +7,9 @@ with some advanced search, and we have pagination.
 
 We get the data from existing websites. We scrape:
 
-- for French books, http://www.librairie-de-paris.fr (also Decitre, but it's less complete). See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
+- for French books:
+  - [Dilicom](https://dilicom-prod.centprod.com/)'s profesional provider,
+  - http://www.librairie-de-paris.fr See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
 - for Spain: http://www.casadellibro.com ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=spanish_scraper)
 - for Germany: http://www.buchlentner.de ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=german_scraper)
 - for DVDs: https://www.momox-shop.fr
@@ -33,6 +35,7 @@ Install from pypi:
 
 You can try this lib on the command line with the following commands:
 - `livres`: french books
+- `dilicom`: Dilicom search (only searches ISBNs, no free search)
 - `libros`: spanish books
 - `bucher`: german books
 - `discogs`: CDs
@@ -53,6 +56,13 @@ and you get the above screenshot.
 - `-i` or `--isbn` to ensure to get all the isbn. The command line
   tool won't get them by default if they need to be fetched with
   another http request for each book. That depends on the websites.
+
+## Settings
+
+The Dilicom interface requires you to set two environment variables:
+
+    export DILICOM_USER="300xxx"
+    export DILICOM_PASSWORD="xyz"
 
 ## As a library
 
@@ -119,6 +129,8 @@ doc: https://python-packaging-user-guide.readthedocs.org/en/latest/distributing/
 
 # Bugs and shortcomings
 
+Note: the Dilicom interface is not concerned by these limitations.
+
 This is webscraping, so it doesn't go without pitfalls:
 
 - the site can go down. It happened already.
@@ -128,6 +140,10 @@ This is webscraping, so it doesn't go without pitfalls:
 
 
 # Changelog
+
+## 0.4
+
+- added Dilicom interface. It only provides search of ISBN(s), it doesn't provide free and advanced search.
 
 ## 0.3.1
 

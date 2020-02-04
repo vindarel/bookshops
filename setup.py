@@ -13,7 +13,7 @@ except (IOError, OSError, ImportError):
 
 setup(
     name = "bookshops",
-    version = "0.3.1",
+    version = "0.4",
     packages = find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires = [
@@ -33,6 +33,7 @@ setup(
         "pyyaml==3.11",
         "tqdm",      # progress bar
         "termcolor",  # terminal color
+        "zeep==3.4",  # SOAP library, for Dilicom
     ],
 
     tests_require = [
@@ -53,12 +54,13 @@ setup(
     description = "Get book, dvd and cd information (isbn or search) from real bookstores.",
     long_description = long_description,
     license = "GNU LGPLv3",
-    keywords = "bookshop bookstore library book dvd isbn ean webscraping",
+    keywords = "bookshop bookstore library book dilicom dvd isbn ean ean13 webscraping",
     url = "https://gitlab.com/vindarel/bookshops",
 
     entry_points = {
         "console_scripts": [
             "livres = bookshops.frFR.librairiedeparis.librairiedeparisScraper:run",
+            "dilicom = bookshops.frFR.dilicom.dilicomScraper:run",
             "libros = bookshops.esES.casadellibro.casadellibroScraper:run",
             "bucher = bookshops.deDE.buchlentner.buchlentnerScraper:run",
             "discogs = bookshops.all.discogs.discogsScraper:run",
