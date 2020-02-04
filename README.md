@@ -64,6 +64,20 @@ The Dilicom interface requires you to set two environment variables:
     export DILICOM_USER="300xxx"
     export DILICOM_PASSWORD="xyz"
 
+In addition, you can set this third one, that allows you to view a
+book's product page on Dilicom's website (within your account). You
+find it on the url of your account. For example, when I am visiting this
+book page:
+
+    https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean=9782840550877&emet=3010xxxxx0100
+
+I set the environment variable like so:
+
+    export DILICOM_EMET="3010xxxxx0100"
+
+In Abelujo, this sets the "details_url" Card slot accordingly and you
+can click on the "source" link when viewing a book's page.
+
 ## As a library
 
 But most of all, from within your program:

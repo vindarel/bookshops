@@ -66,45 +66,27 @@ class Scraper():
         self.WSDL = "http://websfel.centprod.com/v2/DemandeFicheProduit?wsdl"
         self.DILICOM_USER = os.getenv('DILICOM_USER')
         self.DILICOM_PASSWORD = os.getenv('DILICOM_PASSWORD')
-
-        #: Base url of the website
-        self.SOURCE_URL_BASE = u"http://www.librairie-de-paris.fr"
-        #: Url to which we just have to add url parameters to run the search
-        # self.SOURCE_URL_SEARCH = u"http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=simple&LIVREANCIEN=2&MOTS="
-        self.SOURCE_URL_FICHE_PRODUIT = u"https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean="
-        #: advanced url (searcf for isbns)
-        # self.SOURCE_URL_ADVANCED_SEARCH = u"http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=appro&LIVREANCIEN=2&MOTS="
-        #: the url to search for an isbn.
-        # self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
-        #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        # self.URL_END = u"&x=0&y=0" # search books
-        # self.TYPE_BOOK = u"book"
-        #: Query parameter to search for the ean/isbn
-        # self.ISBN_QPARAM = u""
-        #: Query param to search for the publisher (editeur)
-        # self.PUBLISHER_QPARAM = u"EDITEUR"
-        #: Number of results to display
-        # self.NBR_RESULTS_QPARAM = u"NOMBRE"
-        # self.NBR_RESULTS = 12
+        #: The url parameter that appears on Dilicom website, without
+        #: which we can't see the product.
+        #: Example: https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean=9782840550877&emet=3010xxxx00100
+        self.DILICOM_EMET = os.getenv('DILICOM_EMET') or ""
+        self.SOURCE_URL_FICHE_PRODUIT = u"https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean={}&emet={}"
 
     def __init__(self, *args, **kwargs):
-        """
-        """
         self.set_constants()
         self.USER_AGENT = "Abelujo"
         self.HEADERS = {'user-agent': self.USER_AGENT}
         # Get the search terms that are isbn
-        # xxx: search for many at once?
+        # xxx: search for many at once.
         if args:
             self.isbns = filter(is_isbn, args)
 
         # Get the search keywords without isbns
         self.words = list(set(args) - set(self.isbns))
 
-
     @catch_errors
     def _details_url(self, product):
-        return self.SOURCE_URL_FICHE_PRODUIT + product['ean13']
+        return self.SOURCE_URL_FICHE_PRODUIT.format(product['ean13'], self.DILICOM_EMET)
 
     @catch_errors
     def _title(self, product):
