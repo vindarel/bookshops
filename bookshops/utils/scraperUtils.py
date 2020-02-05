@@ -24,6 +24,12 @@ import time
 import addict
 from termcolor import colored
 
+CODES_DISPO = {
+    6: "Arrêt de commercialisation",
+    1: "Disponible",  # ?
+    0: "disponibilité inconnue",
+}
+
 
 class Timer(object):
     """
@@ -111,7 +117,7 @@ def is_isbn(it):
 
     return res
 
-def print_card(card):
+def print_card(card, details=False):
     """Pretty output for the console.
     """
     card = addict.Dict(card)
@@ -124,3 +130,6 @@ def print_card(card):
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
                card.price,
                card.isbn if card.isbn else "")
+    if details:
+        print u"   Date publication: {}".format(card.date_publication)
+        print u"   {}".format(CODES_DISPO.get(card.availability))

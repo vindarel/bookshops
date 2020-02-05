@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import datetime
 import logging
 import logging.config
 import os
@@ -104,16 +105,17 @@ class Scraper():
 
     @catch_errors
     def _img(self, product):
-        # TODO:
+        # Not available in FEL à la demande.
         return None
 
     @catch_errors
-    def _publisher(self, product):
+    def _publishers(self, product):
         """
         Return a list of publishers (strings).
         """
-        # TODO:
-        return []
+        it = product['elemGeneraux']['edit'] or ""
+        it = it.capitalize()
+        return [it]
 
     def _price(self, product):
         "The real price, without discounts"
@@ -135,7 +137,7 @@ class Scraper():
     def _description(self, product):
         """To get with postSearch.
         """
-        # TODO:
+        # not available.
         pass
 
     @catch_errors
@@ -151,19 +153,23 @@ class Scraper():
 
     @catch_errors
     def _date_publication(self, product):
+        """
+        Return a datetime.date object.
+        In the scrapers we returned a string, parsed later in Abelujo.
+        """
         date_publication = product['elemGeneraux']['dtparu']
-        # TODO: strftime?
+        if date_publication:
+            date_publication = datetime.datetime.strptime(date_publication, '%Y%m%d')
         return date_publication
 
     @catch_errors
     def _availability(self, product):
-        """Return: string.
         """
-        CODES_DISPO = {
-            6: "Arrêt de commercialisation",
-            1: "Disponible"  # ?
-        }
-        availability = product['elemTarif']['codedispo']
+        Return: int.
+        cf codes in scraperUtils.
+        We don't store this in Abelujo, as it is supposed to change anytime.
+        """
+        availability = int(product['elemTarif']['codedispo'] or '0')
         return availability
 
     @catch_errors
@@ -212,7 +218,7 @@ class Scraper():
         for product in product_list:
             b = addict.Dict()
             authors = self._authors(product)
-            publishers = self._publisher(product)
+            publishers = self._publishers(product)
             b.authors = authors
             b.search_terms = self.query
             b.data_source = self.SOURCE_NAME
@@ -269,7 +275,7 @@ def main(*words):
     scrap = Scraper(*isbns)
     bklist, errors = scrap.search()
 
-    map(print_card, bklist)
+    [print_card(it, details=True) for it in bklist]
 
 def run():
     exit(clize.run(main))
