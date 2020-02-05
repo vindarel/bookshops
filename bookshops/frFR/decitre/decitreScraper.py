@@ -22,7 +22,7 @@ common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
 cdpp, _ = os.path.split(cdp)
 sys.path.append(cdpp)
-from bookshops.utils.baseScraper import Scraper as baseScraper
+from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
@@ -32,7 +32,7 @@ from bookshops.utils.decorators import catch_errors
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-class Scraper(baseScraper):
+class Scraper(BaseScraper):
 
     """
     Advanced search available:

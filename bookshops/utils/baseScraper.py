@@ -66,7 +66,7 @@ Xpath expressions are terse, they allow to further factorize code.
 """
 
 
-class Scraper(object):
+class BaseScraper(object):
     """Base class to build scrapers. Mostly used for the __init__ and
     postSearch methods. A subclass will redefine the methods used to
     really extract the data.

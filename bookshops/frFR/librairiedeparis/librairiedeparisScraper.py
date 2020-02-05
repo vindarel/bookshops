@@ -15,7 +15,7 @@ from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
 from sigtools.modifiers import kwoargs
 
-from bookshops.utils.baseScraper import Scraper as baseScraper
+from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import isbn_cleanup
@@ -30,7 +30,7 @@ logging.basicConfig(level=logging.ERROR) #to manage with ruche
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
 
-class Scraper(baseScraper):
+class Scraper(BaseScraper):
 
     query = ""
 

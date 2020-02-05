@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
-from bookshops.utils.baseScraper import Scraper as baseScraper
+from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import isbn_cleanup
@@ -114,7 +114,7 @@ class ProductPage(object):
         desc = product.find('ul', class_="alt_content").text.strip()
         return desc
 
-class Scraper(baseScraper):
+class Scraper(BaseScraper):
     """We can search for CDs, DVD and other stuff on buchlentner.
 
     Suchtipps:

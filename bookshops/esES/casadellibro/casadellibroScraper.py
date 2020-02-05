@@ -34,7 +34,7 @@ import clize
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
-from bookshops.utils.baseScraper import Scraper as baseScraper
+from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.baseScraper import postSearch
 from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
@@ -45,7 +45,7 @@ from bookshops.utils.decorators import catch_errors
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-class Scraper(baseScraper):
+class Scraper(BaseScraper):
     """
     """
 
