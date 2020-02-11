@@ -125,11 +125,14 @@ class Scraper():
 
     def _price(self, product):
         "The real price, without discounts"
-        price = product['elemTarif']['prix']  # "00013000"
-        price = int(price)
-        # TODO:
-        # - code dispo
-        return price / 1000
+        price = product['elemTarif'] or 0
+        if price:
+            price = price['prix']  # "00013000"
+            price = int(price)
+            # TODO:
+            # - code dispo
+            return price / 1000
+        return 0
 
     @catch_errors
     def _isbn(self, product):
@@ -223,6 +226,9 @@ class Scraper():
         product_list = resp['elemReponse']
 
         for product in product_list:
+            if product['diagnostic'] == 'UNKNOWN_EAN':
+                log.warn(u"unknown ean: {}".format(product['ean13']))
+                continue
             b = addict.Dict()
             authors = self._authors(product)
             publishers = self._publishers(product)
