@@ -25,9 +25,9 @@ import addict
 from termcolor import colored
 
 CODES_DISPO = {
-    6: "Arrêt de commercialisation",
-    1: "Disponible",  # ?
-    0: "disponibilité inconnue",
+    6: u"Arrêt de commercialisation",
+    1: u"Disponible",  # ?
+    0: u"disponibilité inconnue",
 }
 
 
