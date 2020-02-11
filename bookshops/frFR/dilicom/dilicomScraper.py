@@ -91,14 +91,18 @@ class Scraper():
 
     @catch_errors
     def _title(self, product):
-        title = product['elemGeneraux']['libstd']
+        title = product['elemGeneraux'] or ""
+        if title:
+            title = title['libstd']
         return title.capitalize()
 
     @catch_errors
     def _authors(self, product):
         """Return a list of str.
         """
-        auteur = product['elemGeneraux']['auteur']
+        auteur = product['elemGeneraux'] or ""
+        if auteur:
+            auteur = auteur['auteur']
         # TODO: multiple authors
         # XXX: they are all uppercase.
         return [auteur]
@@ -113,7 +117,9 @@ class Scraper():
         """
         Return a list of publishers (strings).
         """
-        it = product['elemGeneraux']['edit'] or ""
+        it = product['elemGeneraux'] or ""
+        if it:
+            it = it['edit'] or ""
         it = it.capitalize()
         return [it]
 
@@ -157,8 +163,9 @@ class Scraper():
         Return a datetime.date object.
         In the scrapers we returned a string, parsed later in Abelujo.
         """
-        date_publication = product['elemGeneraux']['dtparu']
+        date_publication = product['elemGeneraux'] or ""
         if date_publication:
+            date_publication = date_publication['dtparu']
             date_publication = datetime.datetime.strptime(date_publication, '%Y%m%d')
         return date_publication
 
