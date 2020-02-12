@@ -145,9 +145,13 @@ class Scraper(BaseScraper):
         """
         Return a list of publishers (strings).
         """
-        pub = product.find(class_="editeur").text.split('-')[0].strip()
-        # TODO: multiple publishers ?
-        return [pub]
+        try:
+            pub = product.find(class_="editeur").text.split('-')[0].strip()
+            # TODO: multiple publishers ?
+            return [pub]
+        except Exception as e:
+            logging.error(u"Error scraping the publisher(s): {}".format(e))
+        return []
 
     def _price(self, product):
         "The real price, without discounts"
