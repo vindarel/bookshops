@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
-import re
-import sys
 
 import addict
 import clize
@@ -15,48 +12,47 @@ from sigtools.modifiers import kwoargs
 
 from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
-from bookshops.utils.scraperUtils import is_isbn
-from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 
-logging.basicConfig(level=logging.ERROR) #to manage with ruche
+logging.basicConfig(level=logging.ERROR)
 
 # logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
 
 CONSTANTS = [
-        #: Name of the website
-        ("SOURCE_NAME", "buchlentner"),
-        #: Base url of the website
-        ("SOURCE_URL_BASE", u"http://www.buchlentner.de"),
-        #: Url to which we just have to add url parameters to run the search
-        ("SOURCE_URL_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
-        #: advanced url (search for isbns)
-        # ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
-        ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
-        # ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=All+Media&title=&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&lang=&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&articleno="),
-        ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
-        ("URL_END", u""), # search books
-        ("TYPE_BOOK", u"book"),
-        #: Query parameter to search for the ean/isbn
-        ("ISBN_QPARAM", u""),
-        #: Query param to search for the publisher (editeur)
-        ("PUBLISHER_QPARAM", u""),
-        #: Number of results to display
-        ("NBR_RESULTS_QPARAM", u"NOMBRE"),
-        ("NBR_RESULTS", 12),
-    ]
+    #: Name of the website
+    ("SOURCE_NAME", "buchlentner"),
+    #: Base url of the website
+    ("SOURCE_URL_BASE", u"http://www.buchlentner.de"),
+    #: Url to which we just have to add url parameters to run the search
+    ("SOURCE_URL_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+    #: advanced url (search for isbns)
+    # ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
+    ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
+    # ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=All+Media&title=&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&lang=&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&articleno="),
+    ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+    ("URL_END", u""),  # search books
+    ("TYPE_BOOK", u"book"),
+    #: Query parameter to search for the ean/isbn
+    ("ISBN_QPARAM", u""),
+    #: Query param to search for the publisher (editeur)
+    ("PUBLISHER_QPARAM", u""),
+    #: Number of results to display
+    ("NBR_RESULTS_QPARAM", u"NOMBRE"),
+    ("NBR_RESULTS", 12),
+]
+
 
 class ProductPage(object):
-    """Scraping a product page. Is necessary because the website redirects
+    """
+    Scraping a product page. Is necessary because the website redirects
     us here on an isbn search (and ok, we take the redirection because
     that page has more info that the default search results page).
 
     exple: http://www.buchlentner.de/product/1741967/Buecher_Drama-und-Lyrik_Drama/Sophokles/Antigone
-
     """
 
     def __init__(self, soup=None, url=None, isbn=None):
@@ -114,6 +110,7 @@ class ProductPage(object):
         desc = product.find('ul', class_="alt_content").text.strip()
         return desc
 
+
 class Scraper(BaseScraper):
     """We can search for CDs, DVD and other stuff on buchlentner.
 
@@ -124,11 +121,8 @@ class Scraper(BaseScraper):
     - foo-bar: findet Ergebnisse, die den Begriff
       "Geschichten-Erzähler" in allen Schreibweisen enthalten, sowohl
       als einzelnes Wort, als Phrase oder mit Bindestrich
-
     """
-
     query = ""
-
 
     def __init__(self, *args, **kwargs):
         """
@@ -187,7 +181,7 @@ class Scraper(BaseScraper):
         authors = authors.split('\n')
         authors = filter(lambda it: it != u"", authors)
         authors = [it.strip() for it in authors]
-        logging.info(u'authors: '+ ', '.join(a for a in authors))
+        logging.info(u'authors: ' + ', '.join(a for a in authors))
         return authors
 
     @catch_errors
@@ -226,7 +220,6 @@ class Scraper(BaseScraper):
         """To get with postSearch.
         """
         return ""
-
 
     def search(self, *args, **kwargs):
         """Searches books. Returns a list of books.
@@ -268,6 +261,7 @@ class Scraper(BaseScraper):
 
         return bk_list, stacktraces
 
+
 def _isbn(details_url):
     """Get the card isbn
 
@@ -294,13 +288,15 @@ def _isbn(details_url):
 
     return isbn, soup
 
+
 def _description(details_url, soup=None):
-    """TODO:
+    """
     """
     if soup:
         desc = soup.find(class_="paging_container3")
 
         return desc
+
 
 def postSearch(card, isbn=None, description=None):
     """Get a card (dictionnary) with 'details_url'.
@@ -317,7 +313,7 @@ def postSearch(card, isbn=None, description=None):
     Return a new card (dict) complete with the new attributes.
 
     """
-    card = addict.Dict(card) # easier dot manipulation
+    card = addict.Dict(card)  # easier dot manipulation
     soup = None
 
     if not isbn:
@@ -328,6 +324,7 @@ def postSearch(card, isbn=None, description=None):
 
     card = card.to_dict()
     return card
+
 
 @annotate(isbn="i", timing="t", words=clize.Parameter.REQUIRED)
 @kwoargs("isbn", "timing")
@@ -356,8 +353,10 @@ def main(isbn=False, timing=False, *words):
         print "Took {} s".format(end - start)
     map(print_card, bklist)
 
+
 def run():
     exit(clize.run(main))
+
 
 if __name__ == '__main__':
     clize.run(main)

@@ -21,19 +21,20 @@ import requests
 import sys
 import unittest
 
+from discogsConnector import Scraper as scraper
+
 common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
 cdpp, _ = os.path.split(cdp)
-scraper = os.path.join(cdpp, 'decitreScraper')
 
 sys.path.append(cdpp)
-from discogsConnector import Scraper as scraper
 
 """
 Test that our scraper still works fine with the real discogs website.
 
 We only look for releases (not artists or labels).
 """
+
 
 class TestDiscogsE2E(unittest.TestCase):
 
@@ -53,21 +54,6 @@ class TestDiscogsE2E(unittest.TestCase):
             self.assertTrue(res[key])
         self.assertEqual(res["authors"], u"Kyuss")
 
-    # We are not interested in artist search, but in releases.
-    # def testArtistSearch(self):
-        # search = scraper(artist=["kyuss",])
-        # res = search.search()
-        # self.assertTrue(res)
-        # self.assertEqual(res[0]["title"], u"Kyuss")
-
-        # TODO: get the artist image ?
-        # check we have access to the image
-        # img = res[0]['img']
-        # self.assertTrue(img, "the first result doesn't have an 'img' attr: can not carry on the tests.")
-        # req = requests.get(img)
-        # self.assertEqual(req.status_code, requests.codes.ok,
-                         # "the image is not accessible: %s with %s " % (req.reason, img))
-
     def testKeyWordsSearch(self):
         kw = ["kyuss", "circus"]
         self.s = scraper(*kw)
@@ -83,6 +69,7 @@ class TestDiscogsE2E(unittest.TestCase):
         self.assertEqual(req.status_code, requests.codes.ok,
                          "the image is not accessible: %s with %s " % (req.reason, img))
         # TODO: check all object keys and values
+
 
 if __name__ == '__main__':
     unittest.main()

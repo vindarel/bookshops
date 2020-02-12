@@ -19,6 +19,7 @@
 import unittest
 from discogsConnector import Scraper
 
+
 class TestDiscogs(unittest.TestCase):
 
     def setUp(self):
@@ -54,7 +55,7 @@ class TestDiscogs(unittest.TestCase):
         test_uri = discogs._construct_img_url(api_url, size="150")
         self.assertEqual(test_uri, accessible_url)
 
-    def testNoJSON(self): # TODO: simulate a 403 error.
+    def testNoJSON(self):  # TODO: simulate a 403 error.
         pass
 
 

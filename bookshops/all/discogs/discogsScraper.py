@@ -1,4 +1,3 @@
-
 #!/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright 2014 - 2019 The Abelujo Developers
@@ -36,6 +35,7 @@ DEFAULT_IMG_SIZE = "150"  # "90" or "150"
 TYPE_CD = "cd"
 TYPE_VINYL = "vinyl"
 
+
 class Scraper(object):
     """Scrap the discogs search results.
 
@@ -64,7 +64,7 @@ class Scraper(object):
 
     def search(self):
         to_ret = []
-        title, artist, cover, details_url = "", "", "", ""
+        title, cover, details_url = "", "", ""
         req = requests.get(self.url, headers=self.headers)
         tree = lxml.html.fromstring(req.content)
         # Get the 50 (first page) references
@@ -84,10 +84,11 @@ class Scraper(object):
                            "details_url": self.discogs_url + details_url,
                            "img": cover,
                            "card_type": TYPE_CD,
-                           "data_source": "discogs", # same name as in abelujo views.
+                           "data_source": "discogs",  # same name as in abelujo views.
                            })
 
-        return to_ret, [] # stacktraces
+        return to_ret, []  # stacktraces
+
 
 @annotate(words=clize.Parameter.REQUIRED)
 @kwoargs()
@@ -104,8 +105,10 @@ def main(*words):
         print " Nb results: {}".format(len(bklist))
         map(print_card, bklist)
 
+
 def run():
     exit(clize.run(main))
+
 
 if __name__ == '__main__':
     clize.run(main)

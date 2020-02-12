@@ -37,6 +37,7 @@ from bookshops.utils.testScraperBase import testScraperBase
 from buchlentnerScraper import Scraper
 from buchlentnerScraper import postSearch
 
+
 class LiveTest(testScraperBase):
 
     def __init__(self, *args, **kwargs):
@@ -47,6 +48,7 @@ class LiveTest(testScraperBase):
         cur_file = os.path.abspath(__file__)
         dirname = os.path.dirname(cur_file)
         self.tfile = os.path.join(dirname, "test_scraper.yaml")
+
 
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(LiveTest)

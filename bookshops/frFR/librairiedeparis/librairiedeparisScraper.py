@@ -3,9 +3,6 @@
 
 import logging
 from termcolor import colored
-import os
-import re
-import sys
 
 import addict
 import clize

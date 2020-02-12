@@ -1,4 +1,3 @@
-
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -25,25 +24,21 @@ http://www.casadellibro.com
 
 from bs4 import BeautifulSoup
 import logging
-import os
 import requests
-import sys
 
-import addict
 import clize
 from sigtools.modifiers import annotate
 from sigtools.modifiers import kwoargs
 
 from bookshops.utils.baseScraper import BaseScraper
-from bookshops.utils.baseScraper import postSearch
 from bookshops.utils.scraperUtils import isbn_cleanup
-from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.decorators import catch_errors
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
+
 
 class Scraper(BaseScraper):
     """
@@ -62,7 +57,6 @@ class Scraper(BaseScraper):
         self.TYPE_BOOK = "book"
         self.URL_END = u"&idtipoproducto=-1&tipoproducto=1&nivel=5"
         self.ISBN_QPARAM = ""
-
 
     query = ""
 
@@ -117,7 +111,7 @@ class Scraper(BaseScraper):
         publisher = product.find(class_="mod-libros-editorial").text.strip()
         split = publisher.split(",")
         if split:
-            publisher = split[0] # split out the date.
+            publisher = split[0]  # split out the date.
         return [publisher]
 
     @catch_errors
@@ -125,12 +119,13 @@ class Scraper(BaseScraper):
         date = product.find(class_="mod-libros-editorial").text.strip()
         split = date.split(",")
         if len(split) > 1:
-            date = split[1] # split out the publisher.
+            date = split[1]  # split out the publisher.
         return date
 
     @catch_errors
     def _isbn(self, product):
         pass
+
 
 def postSearch(card):
     """Get the ean/isbn."""
@@ -139,7 +134,6 @@ def postSearch(card):
         log.error("postSearch error: url is False ! ({}).".format(url))
         return None
 
-    to_ret = {"isbn": None}
     req = requests.get(url)
     soup = BeautifulSoup(req.text, "lxml")
 
@@ -153,6 +147,7 @@ def postSearch(card):
         log.debug("postSearch: error while getting the isbn of {}: {}".format(url, e))
 
     return card
+
 
 @annotate(words=clize.Parameter.REQUIRED)
 @kwoargs()
@@ -169,8 +164,10 @@ def main(*words):
     bklist = [postSearch(it) for it in bklist]
     map(print_card, bklist)
 
+
 def run():
     exit(clize.run(main))
+
 
 if __name__ == '__main__':
     clize.run(main)

@@ -31,6 +31,7 @@ DEFAULT_IMG_SIZE = "150"  # "90" or "150"
 TYPE_CD = "cd"
 TYPE_VINYL = "vinyl"
 
+
 class Scraper:
     """Search releases on discogs, by keyword or ean.
 
@@ -104,7 +105,7 @@ class Scraper:
             pixogs_url = DISCOGS_IMG_URL + search_type
             myimg = "-".join([pixogs_url, size] + split[-2:])
             return myimg
-        except Exception, e:
+        except Exception:
             # It doesn t work in some cases
             # log.error("--- error getting the image url: ", e)
             return ""
@@ -181,8 +182,10 @@ class Scraper:
                             mycard["authors"] = [val['title'].split('-')[0]]  # what if the band name contains a - ?
                         if 'title' in val:
                             mycard["title"] = val["title"]
-                        if 'uri' in val: mycard["details_url"] = self.discogs_url + val["uri"]
-                        if 'format' in val: mycard["format"] = val["format"][0]
+                        if 'uri' in val:
+                            mycard["details_url"] = self.discogs_url + val["uri"]
+                        if 'format' in val:
+                            mycard["format"] = val["format"][0]
                         if 'label' in val:
                             # releases have often many labels (2 or 3).
                             # label is sometimes a str, sometimes a list.
@@ -205,7 +208,8 @@ class Scraper:
                             # Construct the link we see with a search via the website.
                             # following works for albums, not artists or sthg else.TODO: artist search
                             mycard['img'] = self._construct_img_url(val['thumb'])
-                        if 'genre' in val: mycard['genre'] = val['genre']
+                        if 'genre' in val:
+                            mycard['genre'] = val['genre']
                         mycard['card_type'] = TYPE_CD  # to finish
                         # mycard["year"] = val["year"]
 
@@ -228,6 +232,7 @@ def postSearch(self):
     """Return the info we could not get at the first time/connection.
     """
     return []
+
 
 if __name__ == '__main__':
     # Testing data:

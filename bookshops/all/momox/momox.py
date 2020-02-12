@@ -2,36 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from termcolor import colored
-import os
 import re
-import sys
 
 import addict
 import clize
-import requests
-# import timedelta
-from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
-from sigtools.modifiers import kwoargs
 
 from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
-from bookshops.utils.scraperUtils import is_isbn
-from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
-from bookshops.utils.scraperUtils import Timer
 
-logging.basicConfig(level=logging.ERROR) #to manage with ruche
+logging.basicConfig(level=logging.ERROR)  # to manage with ruche
 
 
 class Scraper(BaseScraper):
 
     query = ""
-
 
     def set_constants(self):
         #: Name of the website
@@ -75,7 +64,7 @@ class Scraper(BaseScraper):
 
     def _nbr_results(self):
         try:
-            nb = self.soup.find( class_='mx-search-result-message')
+            nb = self.soup.find(class_='mx-search-result-message')
             nb = nb.text.strip()
             res = re.search('\d+', nb)
             if not res:
@@ -159,7 +148,7 @@ class Scraper(BaseScraper):
             return [card], stacktraces
 
         product_list = self._product_list()
-        nbr_results = self._nbr_results()
+        # nbr_results = self._nbr_results()
         for product in product_list:
             authors = self._authors(product)
             b = addict.Dict()
@@ -196,8 +185,10 @@ def main(review=False, *words):
 
     map(print_card, bklist)
 
+
 def run():
     exit(clize.run(main))
+
 
 if __name__ == '__main__':
     clize.run(main)

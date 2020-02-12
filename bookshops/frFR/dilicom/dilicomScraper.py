@@ -19,7 +19,8 @@ from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import print_card
 
-logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
+logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s',
+                    level=logging.ERROR)
 
 logging.config.dictConfig({
     'version': 1,
@@ -47,11 +48,13 @@ logging.config.dictConfig({
 
 log = logging.getLogger(__name__)
 
+
 class Scraper():
     """
     Dilicom SOAP service.
 
-    This is not a scraper, but we keep the class name for automatic inclusion into Abelujo.
+    This is not a scraper, but we keep the class name for automatic inclusion
+    into Abelujo.
     """
 
     query = ""
@@ -254,6 +257,7 @@ class Scraper():
 
         return bk_list, stacktraces
 
+
 def postSearch(card, isbn=None):
     """Get a card (dictionnary) with 'details_url'.
 
@@ -289,6 +293,7 @@ def main(*words):
     bklist, errors = scrap.search()
 
     [print_card(it, details=True) for it in bklist]
+
 
 def run():
     exit(clize.run(main))
