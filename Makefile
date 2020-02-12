@@ -35,3 +35,7 @@ build:
 upload-pypi:
 	# hint: doesn't work with the old tar.gz in dist/
 	twine upload dist/*
+
+flake8:
+	flake8 --config=setup.cfg abelujo search *.py
+qa: flake8
