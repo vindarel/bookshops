@@ -1,7 +1,7 @@
 pip:
 	pip install -r requirements.txt
 
-install: pip 
+install: pip
 
 decitre:
 	@cd bookshops/frFR/decitre/ && python test_end2end.py
@@ -37,5 +37,5 @@ upload-pypi:
 	twine upload dist/*
 
 flake8:
-	flake8 --config=setup.cfg abelujo search *.py
+	flake8 --config=setup.cfg --ignore=E501 bookshops *.py
 qa: flake8
