@@ -123,13 +123,34 @@ def print_card(card, details=False):
     card = addict.Dict(card)
     COL_WIDTH = 30
     TRUNCATE  = 19
+    currency = card.get('currency', '€')
+
+    def currency_prefix(currency):
+        """
+        € comes after the price, CHF comes before.
+        """
+        if currency == 'CHF':
+            return 'CHF'
+        return ""
+
+    def currency_suffix(currency):
+        """
+        € comes after the price, CHF comes before.
+        """
+        if currency == '€':
+            return '€'
+        return ""
+
     print colored(" " + card.title, "blue")
     # Great formatting guide: https://pyformat.info/ :)
-    print u"   {:{}.{}} {:>{}.{}} {:5} €   {}".\
+    print u"   {:{}.{}} {:>{}.{}} {} {:4} {}   {}".\
         format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
+               currency_prefix(currency),
                card.price,
+               currency_suffix(currency),
                card.isbn if card.isbn else "")
     if details:
         print u"   Date publication: {}".format(card.date_publication)
-        print u"   {}".format(CODES_DISPO.get(card.availability))
+        if card.get('availability'):
+            print u"   {}".format(CODES_DISPO.get(card.availability))

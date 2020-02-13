@@ -14,11 +14,11 @@ except (IOError, OSError, ImportError):
 
 setup(
     name="bookshops",
-    version="0.4.3",
+    version="0.5",
     packages=find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires=[
-        "pip==9",
+        "pip",
         "requests==2.21",
         "beautifulsoup4",
         "isbnlib<4",  # useful tools to manipulate and get isbn
@@ -64,6 +64,7 @@ setup(
         "console_scripts": [
             "livres = bookshops.frFR.librairiedeparis.librairiedeparisScraper:run",  # noqa: E501
             "dilicom = bookshops.frFR.dilicom.dilicomScraper:run",
+            "lelivre = bookshops.frFR.lelivre.lelivreScraper:run",
             "libros = bookshops.esES.casadellibro.casadellibroScraper:run",
             "bucher = bookshops.deDE.buchlentner.buchlentnerScraper:run",
             "discogs = bookshops.all.discogs.discogsScraper:run",

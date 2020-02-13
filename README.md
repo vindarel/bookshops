@@ -8,8 +8,9 @@ with some advanced search, and we have pagination.
 We get the data from existing websites. We scrape:
 
 - for French books:
-  - [Dilicom](https://dilicom-prod.centprod.com/)'s profesional provider,
+  - [Dilicom](https://dilicom-prod.centprod.com/)'s profesional provider (**new in v0.4, jan. 2020**),
   - http://www.librairie-de-paris.fr See [its doc](doc/frenchscraper.md) ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=french_scraper)
+- for Switzerland: [lelivre.ch](https://www.lelivre.ch) (**new in 0.5, feb. 2020**)
 - for Spain: http://www.casadellibro.com ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=spanish_scraper)
 - for Germany: http://www.buchlentner.de ![](http://gitlab.com/vindarel/bookshops/badges/master/build.svg?job=german_scraper)
 - for DVDs: https://www.momox-shop.fr
@@ -35,6 +36,7 @@ Install from pypi:
 
 You can try this lib on the command line with the following commands:
 - `livres`: french books
+- `lelivre`: swiss books
 - `dilicom`: Dilicom search (only searches ISBNs, no free search)
 - `libros`: spanish books
 - `bucher`: german books

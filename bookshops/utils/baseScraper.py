@@ -81,6 +81,7 @@ class BaseScraper(object):
     """
 
     query = ""
+    METHOD = 'GET'
 
     def set_constants(self):
         """Call before __init__.
@@ -88,6 +89,7 @@ class BaseScraper(object):
         self.SOURCE_NAME = "name"
         #: Base url of the website
         self.SOURCE_URL_BASE = u"http//url-base"
+        #: GET or POST?
         #: Url to which we just have to add url parameters to run the search
         self.SOURCE_URL_SEARCH = u"url-search"
         #: Advanced search url
@@ -119,9 +121,7 @@ class BaseScraper(object):
         parameters: either a list of words (fires a global search) or
         keywords arguments (key/values pairs, values being lists).
 
-        Keys can be: label (for title), author_names,publisher, isbn, …
-        the same as decitre (without the dctr_ prefix).
-
+        Keys can be: label (for title), author_names,publisher, isbn etc.
         """
 
         self.USER_AGENT = "Abelujo"
@@ -142,8 +142,6 @@ class BaseScraper(object):
             print 'Error: give args to the query'
 
         # headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36',
-                   # 'Host':'www.decitre.fr',
-                   # 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
 
         # Get the search terms that are isbn
         # (we only search for one atm)
@@ -178,9 +176,8 @@ class BaseScraper(object):
 
             # If a isbn is given, search for it
             if isbns:
-                # Some sites use query parameters to set the isbn
-                # (decitre), others treat it like a normal one (casa
-                # del libro).
+                # Some sites use query parameters to set the isbn,
+                # others treat it like a normal one (casa del libro).
                 if self.ISBN_QPARAM not in ["", u""]:
                     self.query = "&{}={}".format(self.ISBN_QPARAM, isbns[0])
                 else:
