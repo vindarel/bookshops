@@ -134,7 +134,7 @@ class Scraper():
             price = int(price)
             # TODO:
             # - code dispo
-            return price / 1000
+            return price / 1000.0
         return 0
 
     @catch_errors
