@@ -23,6 +23,7 @@ import time
 
 import addict
 from termcolor import colored
+import string as string_mod
 
 CODES_DISPO = {
     6: u"Arrêt de commercialisation",
@@ -65,6 +66,7 @@ def priceFromText(text):
     price = match.group()
     return price
 
+
 def priceStr2Float(str):
     """Gets a str, performs basic formatting and returns a Float.
 
@@ -74,6 +76,7 @@ def priceStr2Float(str):
     returns: Float
     """
     return float(str.replace(",", "."))
+
 
 def isbn_cleanup(isbn):
     """Clean the string and return only digits. (actually, remove all
@@ -97,6 +100,7 @@ def isbn_cleanup(isbn):
 
     return res
 
+
 def is_isbn(it):
     """Return True is the given string is an ean or an isbn, i.e:
 
@@ -110,19 +114,35 @@ def is_isbn(it):
     ISBN_ALLOWED_LENGTHS = [13, 10]
     res = False
     pattern = re.compile("[0-9]+")
-    if (type(it) == type(u'u') or type(it) == type('str'))and \
+    if (isinstance(it, unicode) or isinstance(it, str)) and \
        len(it) in ISBN_ALLOWED_LENGTHS and \
        pattern.match(it):
         res = True
 
     return res
 
+
+def rmPunctuation(it):
+    """
+    Remove all punctuation from the string.
+
+    return: str
+    """
+    # https://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
+    # ret = it.translate(None, string.punctuation) # faster, not with unicode
+    if not it:
+        return it
+    exclude = set(string_mod.punctuation)
+    st = ''.join(ch for ch in it if ch not in exclude)
+    return st
+
+
 def print_card(card, details=False):
     """Pretty output for the console.
     """
     card = addict.Dict(card)
     COL_WIDTH = 30
-    TRUNCATE  = 19
+    TRUNCATE = 19
     currency = card.get('currency', '€')
 
     def currency_prefix(currency):

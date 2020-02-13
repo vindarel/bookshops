@@ -196,13 +196,8 @@ class Scraper():
         pass
 
     def search(self, *args, **kwargs):
-        """Searches books. Returns a list of books.
-
-        From keywords, fires a query on decitre and parses the list of
-        results to retrieve the information of each book.
-
-        args: liste de mots, rajoutés dans le champ ?q=
-
+        """
+        Searches ISBNs. Returns a list of books.
         """
         bk_list = []
         stacktraces = []

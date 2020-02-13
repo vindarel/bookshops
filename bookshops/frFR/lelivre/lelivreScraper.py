@@ -9,7 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
-from sigtools.modifiers import kwoargs
 
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
@@ -49,7 +48,7 @@ def find_dd(terms, descriptions, term):
                 return desc.a.text
             return desc.text
 
-# class Scraper(BaseScraper):
+
 class Scraper():
 
     query = ""
@@ -278,6 +277,7 @@ class Scraper():
             bk_list.append(b.to_dict())
 
         return bk_list, stacktraces
+
 
 def postSearch(card, isbn=None):
     """Get a card (dictionnary) with 'details_url'.

@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
 import unittest
 import yaml
+
 
 def filterAttribute(attr, dataresult, fdata):
     """Find a dict from fdata list whose key 'attr' is equal to dataresult's key.

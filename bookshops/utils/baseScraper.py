@@ -22,15 +22,10 @@ Base scraper to build new ones.
 """
 
 import logging
-import os
-import sys
 import requests
 from bs4 import BeautifulSoup
 
 from bookshops.utils.scraperUtils import is_isbn
-from bookshops.utils.scraperUtils import isbn_cleanup
-from bookshops.utils.scraperUtils import priceFromText
-from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.decorators import catch_errors
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
@@ -96,7 +91,7 @@ class BaseScraper(object):
         self.SOURCE_URL_ADVANCED_SEARCH = u""
         #: The url to search for an isbn (can be the advanced or the simple one).
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
-        ERR_OUTOFSTOCK = u"product out of stock"
+        self.ERR_OUTOFSTOCK = u"product out of stock"
         self.TYPE_BOOK = "book"
         self.TYPE_DVD = "dvd"
         # there is no comic type.
@@ -109,8 +104,7 @@ class BaseScraper(object):
         self.PUBLISHER_QPARAM = ""
         #: Number of results to display
         self.NBR_RESULTS_QPARAM = u""
-        self.NBR_RESULTS = 24 # 12 by default
-
+        self.NBR_RESULTS = 24  # 12 by default
 
     def __init__(self, *args, **kwargs):
         """Constructs the query url with the given parameters, retrieves the
@@ -128,12 +122,12 @@ class BaseScraper(object):
         self.HEADERS = {'user-agent': self.USER_AGENT}
 
         #: When we search for an isbn, it's possible the website lend
-        #us not to the default search results page, but redirect us to
-        #the product page instead. In that case the search() method,
-        #with default CSS selectors, won't work. We must scrap the
-        #product page for everything. We could not accept the
-        #redirection, but with it we go faster to a much more useful
-        #product page.
+        # us not to the default search results page, but redirect us to
+        # the product page instead. In that case the search() method,
+        # with default CSS selectors, won't work. We must scrap the
+        # product page for everything. We could not accept the
+        # redirection, but with it we go faster to a much more useful
+        # product page.
         self.ISBN_SEARCH_REDIRECTED_TO_PRODUCT_PAGE = False
 
         self.page = 1
@@ -181,12 +175,12 @@ class BaseScraper(object):
                 if self.ISBN_QPARAM not in ["", u""]:
                     self.query = "&{}={}".format(self.ISBN_QPARAM, isbns[0])
                 else:
-                    #xxx we could search for many isbns at once.
+                    # XXX: we could search for many isbns at once.
                     self.query = isbns[0]
                     self.isbn = self.query
 
                 self.url = self.SOURCE_URL_ISBN_SEARCH + self.query
-                self.url += self.URL_END # no pagination when isbn
+                self.url += self.URL_END  # no pagination when isbn
 
             # otherwise search the keywords.
             else:
@@ -296,7 +290,7 @@ class BaseScraper(object):
         stacktraces = []
         product_list = self._product_list()
         status = self.req.status_code
-        if (status / 100) in [4,5]: # get 400 and 500 errors
+        if (status / 100) in [4, 5]:  # get 400 and 500 errors
             stacktraces.append("The remote source has a problem, we can not connect to it.")
 
         for product in product_list:
@@ -309,7 +303,7 @@ class BaseScraper(object):
             publishers = self._publisher(product) or []
             b = {}
             b["data_source"] = self.SOURCE_NAME
-            b["isbn"] = self._isbn(product) # missing
+            b["isbn"] = self._isbn(product)  # missing
             b["title"] = self._title(product)
             b["details_url"] = self._details_url(product)
             b["date_publication"] = self._date_publication(product)
@@ -329,6 +323,7 @@ class BaseScraper(object):
 
         return (bk_list, stacktraces)
 
+
 def postSearch(card):
     """Complementary informations to fetch on a details' page.
 
@@ -337,6 +332,7 @@ def postSearch(card):
     Return: the card dict, with isbn
     """
     return card
+
 
 def reviews(card_dict):
     """Get reviews of that card on good websites.

@@ -25,6 +25,7 @@ import traceback
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
+
 def catch_errors(fn):
     """Catch all sort of exceptions, print them, print the stacktrace.
 

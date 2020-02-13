@@ -10,27 +10,26 @@ import requests
 from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
-from sigtools.modifiers import kwoargs
 
 from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
-from bookshops.utils.scraperUtils import isbn_cleanup
 from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
 from bookshops.utils.scraperUtils import print_card
+from bookshops.utils.scraperUtils import rmPunctuation
 from bookshops.utils.scraperUtils import Timer
 
-logging.basicConfig(level=logging.ERROR) #to manage with ruche
+logging.basicConfig(level=logging.ERROR)
 
 # logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
 
+
 class Scraper(BaseScraper):
 
     query = ""
-
 
     def set_constants(self):
         #: Name of the website
@@ -44,7 +43,7 @@ class Scraper(BaseScraper):
         #: the url to search for an isbn.
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        self.URL_END = u"&x=0&y=0" # search books
+        self.URL_END = u"&x=0&y=0"  # search books
         self.TYPE_BOOK = u"book"
         #: Query parameter to search for the ean/isbn
         self.ISBN_QPARAM = u""
@@ -124,12 +123,12 @@ class Scraper(BaseScraper):
     def _authors(self, product):
         """Return a list of str.
         """
-        authors = product.find(class_='livre_auteur').text # xxx many authors ? see list_authors
+        authors = product.find(class_='livre_auteur').text  # xxx many authors ? see list_authors
         authors = authors.split('\n')
         # TODO: multiple authors
         authors = filter(lambda it: it != u"", authors)
         authors = [it.strip().capitalize() for it in authors]
-        logging.info(u'authors: '+ ', '.join(a for a in authors))
+        logging.info(u'authors: ' + ', '.join(a for a in authors))
         return authors
 
     @catch_errors
@@ -198,7 +197,7 @@ class Scraper(BaseScraper):
                     logging.info(u'editor: ' + details['editor'])
                 elif key == 'isbn :':
                     details['isbn'] = k.em.text.strip()
-                    logging.info(u'isbn: '+ details['isbn'])
+                    logging.info(u'isbn: ' + details['isbn'])
 
             if not details:
                 logging.warning(u"Warning: we didn't get any details (isbn,…) about the book")
@@ -246,17 +245,16 @@ class Scraper(BaseScraper):
     def search(self, *args, **kwargs):
         """Searches books. Returns a list of books.
 
-        From keywords, fires a query on decitre and parses the list of
+        From keywords, fires a query and parses the list of
         results to retrieve the information of each book.
 
         args: liste de mots, rajoutés dans le champ ?q=
-
         """
         bk_list = []
         stacktraces = []
 
         product_list = self._product_list()
-        nbr_results = self._nbr_results()
+        # nbr_results = self._nbr_results()
         for product in product_list:
             authors = self._authors(product)
             publishers = self._publisher(product)
@@ -283,6 +281,7 @@ class Scraper(BaseScraper):
 
         return bk_list, stacktraces
 
+
 def postSearch(card, isbn=None):
     """Get a card (dictionnary) with 'details_url'.
 
@@ -298,6 +297,7 @@ def postSearch(card, isbn=None):
 
     """
     return card
+
 
 def _scrape_review(link):
     """
@@ -320,8 +320,9 @@ def _scrape_review(link):
         'url': link,
         'short_summary': article.cleaned_text[:SHORT_SUMMARY_LENGTH],
         'long_summary': article.cleaned_text[:LONG_SUMMARY_LENGTH] + "...",
-        }
+    }
     return res
+
 
 def reviews(card):
     """Get some reviews on good websites.
@@ -337,7 +338,7 @@ def reviews(card):
     Return: a list of reviews (dict) with: title, url, short summary, long summary.
     """
     # silent=False
-    silent=True
+    silent = True
     # Search on lmda.net magazine.
     url = u"https://framabee.org/?q=site%3Almda.net+site%3Afranceculture.org {{ search }} &categories=general"
     # on one website only with framabee :/
@@ -419,8 +420,10 @@ def main(review=False, *words):
 
     map(print_card, bklist)
 
+
 def run():
     exit(clize.run(main))
+
 
 if __name__ == '__main__':
     clize.run(main)
