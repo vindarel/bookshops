@@ -18,6 +18,7 @@ from sigtools.modifiers import autokwoargs
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import print_card
+from bookshops.utils.scraperUtils import price_fmt
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s',
                     level=logging.ERROR)
@@ -56,6 +57,8 @@ class Scraper():
     This is not a scraper, but we keep the class name for automatic inclusion
     into Abelujo.
     """
+
+    currency = '€'
 
     query = ""
     isbns = []
@@ -239,6 +242,8 @@ class Scraper():
             b.title = self._title(product)
             b.authors_repr = ", ".join(authors)
             b.price = self._price(product)
+            b.price_fmt = price_fmt(b.price, self.currency)
+            b.currency = self.currency
             b.publishers = publishers
             b.pubs_repr = ", ".join(publishers)
             # b.card_type = self.TYPE_BOOK

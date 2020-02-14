@@ -26,6 +26,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from bookshops.utils.scraperUtils import is_isbn
+from bookshops.utils.scraperUtils import price_fmt
 from bookshops.utils.decorators import catch_errors
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
@@ -75,6 +76,7 @@ class BaseScraper(object):
 
     """
 
+    currency = '€'
     query = ""
     METHOD = 'GET'
 
@@ -312,6 +314,9 @@ class BaseScraper(object):
             b["authors"] = authors
             b["authors_repr"] = authors_repr
             b["price"] = self._price(product)
+            b["price_fmt"] = price_fmt(b.price, self.currency)
+            b["currency"] = self.currency
+
             b["description"] = self._description(product)
             b["img"] = self._img(product)
             b["publishers"] = publishers

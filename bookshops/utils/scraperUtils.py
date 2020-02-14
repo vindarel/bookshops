@@ -174,3 +174,15 @@ def print_card(card, details=False):
         print u"   Date publication: {}".format(card.date_publication)
         if card.get('availability'):
             print u"   {}".format(CODES_DISPO.get(card.availability))
+
+
+def price_fmt(price, currency):
+    """
+    Return: a string, with the price formatted correctly with its currency symbol.
+
+    Exemple: 10 € or CHF 10
+    """
+    if currency.lower() == 'chf':
+        return 'CHF {:.2f}'.format(price)
+    else:
+        return '{:.2f} €'.format(price)

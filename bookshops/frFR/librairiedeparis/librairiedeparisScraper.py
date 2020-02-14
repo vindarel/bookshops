@@ -16,6 +16,7 @@ from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import priceFromText
 from bookshops.utils.scraperUtils import priceStr2Float
+from bookshops.utils.scraperUtils import price_fmt
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.scraperUtils import rmPunctuation
 from bookshops.utils.scraperUtils import Timer
@@ -269,6 +270,8 @@ class Scraper(BaseScraper):
             b.authors = authors
             b.authors_repr = ", ".join(authors)
             b.price = self._price(product)
+            b.price_fmt = price_fmt(b.price, self.currency)
+            b.currency = self.currency
             b.publishers = publishers
             b.pubs_repr = ", ".join(publishers)
             b.card_type = self.TYPE_BOOK
