@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
 
+from bookshops.utils import simplecache
+
 from bookshops.utils.baseScraper import BaseScraper
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
@@ -20,6 +22,7 @@ from bookshops.utils.scraperUtils import price_fmt
 from bookshops.utils.scraperUtils import print_card
 from bookshops.utils.scraperUtils import rmPunctuation
 from bookshops.utils.scraperUtils import Timer
+
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -251,6 +254,12 @@ class Scraper(BaseScraper):
 
         args: liste de mots, rajoutés dans le champ ?q=
         """
+        if self.cached_results is not None:
+            log.debug("search: hit cache.")
+            # print "-- cache hit for ".format(self.ARGS)
+            assert isinstance(self.cached_results, list)
+            return self.cached_results, []
+
         bk_list = []
         stacktraces = []
 
@@ -282,6 +291,7 @@ class Scraper(BaseScraper):
 
             bk_list.append(b.to_dict())
 
+        simplecache.cache_results(self.SOURCE_NAME, self.ARGS, bk_list)
         return bk_list, stacktraces
 
 

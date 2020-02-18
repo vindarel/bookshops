@@ -28,6 +28,7 @@ from bs4 import BeautifulSoup
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import price_fmt
 from bookshops.utils.decorators import catch_errors
+from bookshops.utils import simplecache
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -119,6 +120,12 @@ class BaseScraper(object):
 
         Keys can be: label (for title), author_names,publisher, isbn etc.
         """
+
+        self.ARGS = args  # remember for simplecache, access in search() method.
+        self.cached_results = simplecache.get_cache(self.SOURCE_NAME, args)
+        if self.cached_results is not None:
+            log.debug("Hit cache.")
+            return self.cached_results
 
         self.USER_AGENT = "Abelujo"
         self.HEADERS = {'user-agent': self.USER_AGENT}
@@ -288,6 +295,10 @@ class BaseScraper(object):
 
         Returns: a couple list of books / stacktraces.
         """
+        if self.cached_results is not None:
+            log.debug("search: hit cache.")
+            return self.cached_results
+
         bk_list = []
         stacktraces = []
         product_list = self._product_list()
@@ -325,6 +336,8 @@ class BaseScraper(object):
             b["availability"] = self._availability(product)
             b["card_type"] = self.TYPE_BOOK
             bk_list.append(b)
+
+        simplecache.cache_results(self.SOURCE_NAME, self.ARGS, bk_list)
 
         return (bk_list, stacktraces)
 
