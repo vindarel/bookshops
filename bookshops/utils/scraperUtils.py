@@ -163,10 +163,10 @@ def print_card(card, details=False):
 
     print colored(" " + card.title, "blue")
     # Great formatting guide: https://pyformat.info/ :)
-    print u"   {:{}.{}} {:>{}.{}} {} {:4} {}   {}".\
+    print "   {:{}.{}} {:>{}.{}} {} {:4} {}   {}".\
         format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
-               currency_prefix(currency),
+               currency_prefix(currency),  # warn: utf8
                card.price,
                currency_suffix(currency),
                card.isbn if card.isbn else "")
