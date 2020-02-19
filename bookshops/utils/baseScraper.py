@@ -125,7 +125,7 @@ class BaseScraper(object):
         self.cached_results = simplecache.get_cache(self.SOURCE_NAME, args)
         if self.cached_results is not None:
             log.debug("Hit cache.")
-            return self.cached_results
+            return
 
         self.USER_AGENT = "Abelujo"
         self.HEADERS = {'user-agent': self.USER_AGENT}
