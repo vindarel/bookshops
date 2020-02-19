@@ -90,6 +90,11 @@ But most of all, from within your program:
     cards = scraper.search()
     # we get a list of dictionnaries with the title, the authors, etc.
 
+## Caching
+
+Results are cached in memory for about 1 day (except Dilicom results,
+in purpose). It allows long-running software based on this library
+(e.g., Abelujo) to feel more dynamic in certain cases.
 
 ## Advanced search
 
@@ -156,6 +161,15 @@ This is webscraping, so it doesn't go without pitfalls:
 
 
 # Changelog
+
+## 0.6
+
+- results are cached again. Simply in memory for about 1 day.
+
+## 0.5
+
+- added a Swiss interface.
+- added support to fetch and print prices in another currency.
 
 ## 0.4
 
