@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
 
+from bookshops.utils import simplecache
+
 from bookshops.utils.decorators import catch_errors
 from bookshops.utils.scraperUtils import is_isbn
 from bookshops.utils.scraperUtils import priceFromText
@@ -21,6 +23,10 @@ logging.basicConfig(level=logging.ERROR)
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s', level=logging.ERROR)
 log = logging.getLogger(__name__)
+
+"""
+Swiss books datasource.
+"""
 
 
 def find_dd(terms, descriptions, term):
@@ -50,6 +56,7 @@ def find_dd(terms, descriptions, term):
             return desc.text
 
 
+# We don't subclass the base scraper, as it is based on GET and here it's a POST.
 class Scraper():
 
     query = ""
@@ -91,6 +98,12 @@ class Scraper():
         self.args = args
         self.set_constants()
         self.PARAMS['inputSearch'] = args
+
+        self.ARGS = args  # remember for simplecache, access in search() method.
+        self.cached_results = simplecache.get_cache(self.SOURCE_NAME, args)
+        if self.cached_results is not None:
+            log.debug("Hit cache.")
+            return
 
         self.req = None
         self.url = self.SOURCE_URL_SEARCH
@@ -249,6 +262,11 @@ class Scraper():
         bk_list = []
         stacktraces = []
 
+        if self.cached_results is not None:
+            log.debug("search: hit cache.")
+            assert isinstance(self.cached_results, list)
+            return self.cached_results, []
+
         product_list = self._product_list()
         # nbr_results = self._nbr_results()
         for product in product_list:
@@ -279,6 +297,7 @@ class Scraper():
 
             bk_list.append(b.to_dict())
 
+        simplecache.cache_results(self.SOURCE_NAME, self.ARGS, bk_list)
         return bk_list, stacktraces
 
 
