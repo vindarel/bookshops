@@ -158,8 +158,18 @@ class Scraper():
         cf codes in scraperUtils.
         We don't store this in Abelujo, as it is supposed to change anytime.
         """
-        availability = int(product.find('codedispo').text or '0')
+        availability = product.find('codedispo') or 0
+        if availability:
+            availability = int(availability.text)
         return availability
+
+    def _availability_fmt(self, code):
+        if code == 1:
+            return "01 - Disponible"
+        elif code == 6:
+            return "06 - Arrêt de commercialisation"
+        else:
+            return "{}".format(code)
 
     @catch_errors
     def _format(self, product):
@@ -237,6 +247,7 @@ class Scraper():
             b.summary = self._description(product)
             b.isbn = self._isbn(product)
             b.availability = self._availability(product)
+            b.availability_fmt = self._availability_fmt(b.availability)
             b.thickness, b.height, b.width, b.weight = self._dimensions(product)
 
             bk_list.append(b.to_dict())

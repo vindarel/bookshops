@@ -55,7 +55,7 @@ def get_cache(source_name, args):
         if res:
             if res.get('day') <= now.day:
                 log.debug("Hit cache.")
-                print("-- cache hit for {}".format(args))
+                # print("-- cache hit for {}".format(args))
                 return res.get('results')
             else:
                 try:
