@@ -126,15 +126,11 @@ class Scraper():
         Épaisseur, hauteur, largeur, poids.
         Return: tuple of ints.
         """
-        # epaiss = product.find('epaiss')
-        # haut = product.find('haut')
-        # larg = product.find('larg')
-        # poids = product.find('poids')
-
         res = []
+        # All xml nodes are present, but they can be without content.
         for name in ['epaiss', 'haut', 'larg', 'poids']:
             prop = product.find(name) or 0
-            if prop:
+            if prop and prop.text:
                 prop = int(prop.text)
             res.append(prop)
 
