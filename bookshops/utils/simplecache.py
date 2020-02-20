@@ -41,8 +41,10 @@ CACHED_CONTENT = {
     },
 }
 
+
 def _stringify_args(args):
     return "{}".format(args)
+
 
 def get_cache(source_name, args):
     stringified_args = _stringify_args(args)
@@ -57,6 +59,7 @@ def get_cache(source_name, args):
     except Exception as e:
         log.error("Could not save cache: {}".format(e))
         return
+
 
 def cache_results(source_name, args, results):
     try:

@@ -162,6 +162,10 @@ This is webscraping, so it doesn't go without pitfalls:
 
 # Changelog
 
+## 0.7
+
+- multiple ISBN search for Dilicom (up to a hundred).
+
 ## 0.6
 
 - results are cached again. Simply in memory for about 1 day.

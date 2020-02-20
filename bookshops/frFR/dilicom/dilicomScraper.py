@@ -66,7 +66,7 @@ class Scraper():
 
     @catch_errors
     def _title(self, product):
-        title = product.find('libstd') or ""
+        title = product.find('libetd') or ""
         if title:
             title = title.text
         return title.title()
@@ -194,7 +194,9 @@ class Scraper():
         envelope = envelope_skeleton.replace('{USER}', self.DILICOM_USER)\
                                     .replace('{PASSWORD}', self.DILICOM_PASSWORD)
         EANS = ''
-        for isbn in self.isbns:
+        if len(self.isbns) > 100:
+            log.error(u"Searching for more than 100 ISBNs is not yet supported.")
+        for isbn in self.isbns[:100]:
             skel = ean_skeleton.replace('{EAN}', isbn)
             EANS = EANS + skel
 
