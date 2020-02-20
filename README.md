@@ -164,7 +164,7 @@ This is webscraping, so it doesn't go without pitfalls:
 
 ## 0.7
 
-- multiple ISBN search for Dilicom (up to a hundred).
+- multiple ISBN search for Dilicom (by batches of one hundred).
 
 ## 0.6
 

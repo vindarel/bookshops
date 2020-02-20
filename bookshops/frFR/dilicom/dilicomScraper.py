@@ -12,6 +12,7 @@ import requests
 
 import addict
 import clize
+import toolz
 
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
@@ -168,9 +169,12 @@ class Scraper():
         # TODO:
         pass
 
-    def search(self, *args, **kwargs):
+    def bulk_search(self, isbns):
         """
-        Searches ISBNs. Returns a list of books.
+        Search for many isbns, 100 max.
+        Do 1 post request.
+        Return:
+        - tuple list of books (dicts), stacktraces
         """
         bk_list = []
         stacktraces = []
@@ -178,21 +182,11 @@ class Scraper():
 <soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/"><soap-env:Body><ns0:demandeFicheProduit xmlns:ns0="http://fel.ws.accelya.com/"><demandeur>{USER}</demandeur><motDePasse>{PASSWORD}</motDePasse>{EANS}<multiple>false</multiple></ns0:demandeFicheProduit></soap-env:Body></soap-env:Envelope>"""
         ean_skeleton = """<ean13s>{EAN}</ean13s>"""
 
-        if not self.DILICOM_USER or not self.DILICOM_PASSWORD:
-            log.warn(u"Dilicom: no DILICOM_USER or DILICOM_PASSWORD found. Aborting the search.")
-            return [], [u"No user and password found for Dilicom connection."]
-
-        # Le FEL à la demande ne permet pas de recherche libre!
-        if not self.isbns:
-            log.warn(u"Dilicom's FEL à la demande only wants ISBNs, and none was given. Return.")
-            return [], [u"Please only search ISBNs on Dilicom."]
-
         envelope = envelope_skeleton.replace('{USER}', self.DILICOM_USER)\
                                     .replace('{PASSWORD}', self.DILICOM_PASSWORD)
+
         EANS = ''
-        if len(self.isbns) > 100:
-            log.error(u"Searching for more than 100 ISBNs is not yet supported.")
-        for isbn in self.isbns[:100]:
+        for isbn in isbns:
             skel = ean_skeleton.replace('{EAN}', isbn)
             EANS = EANS + skel
 
@@ -246,6 +240,35 @@ class Scraper():
             bk_list.append(b.to_dict())
 
         return bk_list, stacktraces
+
+    def search(self, *args, **kwargs):
+        """
+        Searches ISBNs, possibly hundreds at once, by batch of 100.
+        Returns a tuple: list of books, stacktraces.
+        """
+
+        if not self.DILICOM_USER or not self.DILICOM_PASSWORD:
+            log.warn(u"Dilicom: no DILICOM_USER or DILICOM_PASSWORD found. Aborting the search.")
+            return [], [u"No user and password found for Dilicom connection."]
+
+        # Le FEL à la demande ne permet pas de recherche libre!
+        if not self.isbns:
+            log.warn(u"Dilicom's FEL à la demande only wants ISBNs, and none was given. Return.")
+            return [], [u"Please only search ISBNs on Dilicom."]
+
+        if len(self.isbns) > 100:
+            log.debug(u"Searching for more than 100 ISBNs.")
+
+        isbn_groups = toolz.partition_all(100, self.isbns)
+
+        all_results = []
+        all_stacktraces = []
+        for isbns in isbn_groups:
+            res, stacktraces = self.bulk_search(isbns)
+            all_results += res
+            all_stacktraces += stacktraces
+
+        return all_results, all_stacktraces
 
 
 @annotate(words=clize.Parameter.REQUIRED)
