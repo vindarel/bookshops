@@ -14,7 +14,7 @@ except (IOError, OSError, ImportError):
 
 setup(
     name="bookshops",
-    version="0.7",
+    version="0.7.1",
     packages=find_packages(exclude=["contrib", "doc", "tests"]),
 
     install_requires=[

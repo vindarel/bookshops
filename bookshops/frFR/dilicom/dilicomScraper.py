@@ -215,16 +215,24 @@ class Scraper():
         if code_execution != "OK":
             logging.warning('The SOAP request {} on Dilicom was not OK: {}'.format(self.query, code_execution))
 
+        # is product found?
         for product in product_list:
             code = product.find('codeexecution').text
             if code != 'OK':
                 log.error(u"Code execution not OK for Dilicom result: {}".format(product))
+                stacktraces.append(u"Dilicom error: {}".format(code))
                 continue
 
-            # Strangely, 'diagnostic' is not found with new query method.
-            # if product['diagnostic'] == 'UNKNOWN_EAN':
-            # log.warn(u"unknown ean: {}".format(product['ean13']))
-            # continue
+            isbn = self._isbn(product)
+
+            diagnostic = product.find('diagnostic')
+            if diagnostic:
+                if diagnostic.text == 'UNKNOWN_EAN':
+                    stacktraces.append(u"EAN inconnu {}".format(isbn))
+                else:
+                    # All of them should be caught by != OK.
+                    stacktraces.append(u"Dilicom error: {}".format(diagnostic))
+                continue
 
             b = addict.Dict()
             authors = self._authors(product)
@@ -245,7 +253,7 @@ class Scraper():
             # b.card_type = self.TYPE_BOOK
             b.img = self._img(product)
             b.summary = self._description(product)
-            b.isbn = self._isbn(product)
+            b.isbn = isbn
             b.availability = self._availability(product)
             b.availability_fmt = self._availability_fmt(b.availability)
             b.thickness, b.height, b.width, b.weight = self._dimensions(product)
