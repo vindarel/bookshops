@@ -52,10 +52,18 @@ def get_cache(source_name, args):
     try:
         CACHED_CONTENT.setdefault(source_name, {})
         res = CACHED_CONTENT[source_name].setdefault(stringified_args, {})
-        if res and res.get('day') <= now.day:
-            log.debug("Hit cache.")
-            print("-- cache hit for {}".format(args))
-            return res.get('results')
+        if res:
+            if res.get('day') <= now.day:
+                log.debug("Hit cache.")
+                print("-- cache hit for {}".format(args))
+                return res.get('results')
+            else:
+                try:
+                    del res
+                    del CACHED_CONTENT[source_name][stringified_args]
+                    return
+                except Exception as e:
+                    log.error(u"Could not delete the cache: {}".format(e))
     except Exception as e:
         log.error("Could not save cache: {}".format(e))
         return
