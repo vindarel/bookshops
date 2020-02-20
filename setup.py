@@ -36,7 +36,6 @@ setup(
         "pyyaml==3.11",
         "tqdm",      # progress bar
         "termcolor",  # terminal color
-        "zeep==3.4",  # SOAP library, for Dilicom
     ],
 
     tests_require=[

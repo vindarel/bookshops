@@ -145,30 +145,12 @@ def print_card(card, details=False):
     TRUNCATE = 19
     currency = card.get('currency', '€')
 
-    def currency_prefix(currency):
-        """
-        € comes after the price, CHF comes before.
-        """
-        if currency == 'CHF':
-            return 'CHF'
-        return ""
-
-    def currency_suffix(currency):
-        """
-        € comes after the price, CHF comes before.
-        """
-        if currency == '€':
-            return '€'
-        return ""
-
     print colored(" " + card.title, "blue")
     # Great formatting guide: https://pyformat.info/ :)
-    print "   {:{}.{}} {:>{}.{}} {} {:4} {}   {}".\
+    print "   {:{}.{}} {:>{}.{}} {:4}   {}".\
         format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
-               currency_prefix(currency),  # warn: utf8
-               card.price,
-               currency_suffix(currency),
+               price_fmt(card.price, currency),
                card.isbn if card.isbn else "")
     if details:
         print u"   Date publication: {}".format(card.date_publication)

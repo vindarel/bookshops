@@ -3,14 +3,15 @@
 
 from __future__ import print_function
 
+from bs4 import BeautifulSoup
 import datetime
 import logging
 import logging.config
 import os
+import requests
 
 import addict
 import clize
-import zeep
 
 from sigtools.modifiers import annotate
 from sigtools.modifiers import autokwoargs
@@ -22,31 +23,6 @@ from bookshops.utils.scraperUtils import price_fmt
 
 logging.basicConfig(format='%(levelname)s [%(name)s]:%(message)s',
                     level=logging.ERROR)
-
-logging.config.dictConfig({
-    'version': 1,
-    'formatters': {
-        'verbose': {
-            'format': '%(name)s: %(message)s'
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'zeep.transports': {
-            # 'level': 'DEBUG',
-            'level': 'WARN',
-            'propagate': True,
-            'handlers': ['console'],
-        },
-    }
-})
-
 log = logging.getLogger(__name__)
 
 
@@ -57,60 +33,52 @@ class Scraper():
     This is not a scraper, but we keep the class name for automatic inclusion
     into Abelujo.
     """
-
     currency = '€'
-
     query = ""
     isbns = []
     words = []
-
-    strict = True  # zeep option. Without strict, it fails parsing the response.
 
     def set_constants(self):
         #: Name of the website
         self.SOURCE_NAME = "dilicom"
 
-        self.WSDL = "http://websfel.centprod.com/v2/DemandeFicheProduit?wsdl"
+        # self.WSDL = "http://websfel.centprod.com/v2/DemandeFicheProduit?wsdl"
+        self.POST_URL = 'http://websfel.centprod.com/v2/DemandeFicheProduit'
         self.DILICOM_USER = os.getenv('DILICOM_USER')
         self.DILICOM_PASSWORD = os.getenv('DILICOM_PASSWORD')
-        #: The url parameter that appears on Dilicom website, without
-        #: which we can't see the product.
-        #: Example: https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean=9782840550877&emet=3010xxxx00100
-        self.DILICOM_EMET = os.getenv('DILICOM_EMET') or ""
-        self.SOURCE_URL_FICHE_PRODUIT = u"https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean={}&emet={}"
+        self.SOURCE_URL_FICHE_PRODUIT = u"https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean={}"
 
     def __init__(self, *args, **kwargs):
         self.set_constants()
         self.USER_AGENT = "Abelujo"
-        self.HEADERS = {'user-agent': self.USER_AGENT}
+        self.HEADERS = {'SOAPAction': '""', 'Content-Type': 'text/xml; charset=utf-8'}
         # Get the search terms that are isbn
-        # xxx: search for many at once.
         if args:
             self.isbns = filter(is_isbn, args)
 
         # Get the search keywords without isbns
-        self.words = list(set(args) - set(self.isbns))
+        # unsupported by Dilicom.
+        # self.words = list(set(args) - set(self.isbns))
 
     @catch_errors
     def _details_url(self, product):
-        return self.SOURCE_URL_FICHE_PRODUIT.format(product['ean13'], self.DILICOM_EMET)
+        return self.SOURCE_URL_FICHE_PRODUIT.format(product.find('ean13').text)
 
     @catch_errors
     def _title(self, product):
-        title = product['elemGeneraux'] or ""
+        title = product.find('libstd') or ""
         if title:
-            title = title['libstd']
-        return title.capitalize()
+            title = title.text
+        return title.title()
 
     @catch_errors
     def _authors(self, product):
         """Return a list of str.
         """
-        auteur = product['elemGeneraux'] or ""
+        auteur = product.find('auteur') or ""
         if auteur:
-            auteur = auteur['auteur']
+            auteur = auteur.text.title()
         # TODO: multiple authors
-        # XXX: they are all uppercase.
         return [auteur]
 
     @catch_errors
@@ -123,48 +91,54 @@ class Scraper():
         """
         Return a list of publishers (strings).
         """
-        it = product['elemGeneraux'] or ""
+        it = product.find('edit') or ''
         if it:
-            it = it['edit'] or ""
-        it = it.capitalize()
+            it = it.text.title()
         return [it]
 
     def _price(self, product):
         "The real price, without discounts"
-        price = product['elemTarif'] or 0
+        price = product.find('prix') or 0
         if price:
-            price = price['prix']  # "00013000"
-            price = int(price)
+            price = price.text  # "00013000"
+            price = float(price)
             # TODO:
             # - code dispo
-            return price / 1000.0
-        return 0
+            price = price / 1000.0
+        return price
 
     @catch_errors
     def _isbn(self, product):
         """
         Return: str
         """
-        ean = product['ean13']
+        ean = product.find('ean13').text
         return ean
 
     @catch_errors
     def _description(self, product):
-        """To get with postSearch.
-        """
-        # not available.
+        # Not available.
         pass
 
     @catch_errors
     def _dimensions(self, product):
-        """Épaisseur, hauteur, largeur, poids."""
-        elt = product['dimensions']
-        if elt and len(elt) > 3:
-            return (int(elt['epaiss'] or 0),  # data not always available
-                    int(elt['haut'] or 0),
-                    int(elt['larg'] or 0),
-                    int(elt['poids'] or 0))
-        return None, None, None, None
+        """
+        Épaisseur, hauteur, largeur, poids.
+        Return: tuple of ints.
+        """
+        # epaiss = product.find('epaiss')
+        # haut = product.find('haut')
+        # larg = product.find('larg')
+        # poids = product.find('poids')
+
+        res = []
+        for name in ['epaiss', 'haut', 'larg', 'poids']:
+            prop = product.find(name) or 0
+            if prop:
+                prop = int(prop.text)
+            res.append(prop)
+
+        return tuple(res)
 
     @catch_errors
     def _date_publication(self, product):
@@ -172,9 +146,9 @@ class Scraper():
         Return a datetime.date object.
         In the scrapers we returned a string, parsed later in Abelujo.
         """
-        date_publication = product['elemGeneraux'] or ""
+        date_publication = product.find('dtparu') or ""
         if date_publication:
-            date_publication = date_publication['dtparu']
+            date_publication = date_publication.text
             date_publication = datetime.datetime.strptime(date_publication, '%Y%m%d')
         return date_publication
 
@@ -185,7 +159,7 @@ class Scraper():
         cf codes in scraperUtils.
         We don't store this in Abelujo, as it is supposed to change anytime.
         """
-        availability = int(product['elemTarif']['codedispo'] or '0')
+        availability = int(product.find('codedispo').text or '0')
         return availability
 
     @catch_errors
@@ -193,7 +167,7 @@ class Scraper():
         """
         Possible formats :pocket, big.
 
-        - return: str or None
+        - return: str
         """
         # TODO:
         pass
@@ -204,32 +178,50 @@ class Scraper():
         """
         bk_list = []
         stacktraces = []
+        envelope_skeleton = """<?xml version='1.0' encoding='utf-8'?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/"><soap-env:Body><ns0:demandeFicheProduit xmlns:ns0="http://fel.ws.accelya.com/"><demandeur>{USER}</demandeur><motDePasse>{PASSWORD}</motDePasse>{EANS}<multiple>false</multiple></ns0:demandeFicheProduit></soap-env:Body></soap-env:Envelope>"""
+        ean_skeleton = """<ean13s>{EAN}</ean13s>"""
+
         if not self.DILICOM_USER or not self.DILICOM_PASSWORD:
             log.warn(u"Dilicom: no DILICOM_USER or DILICOM_PASSWORD found. Aborting the search.")
             return [], [u"No user and password found for Dilicom connection."]
 
-        client = zeep.Client(self.WSDL)
-        # Le FEL ne permet pas de recherche libre?!
+        # Le FEL à la demande ne permet pas de recherche libre!
         if not self.isbns:
             log.warn(u"Dilicom's FEL à la demande only wants ISBNs, and none was given. Return.")
-            return [], [u"Please search ISBNs on Dilicom."]
-        if len(self.isbns) > 1:
-            log.warn("Searching many ISBNs on Dilicom: TODO.")
-        with client.settings(strict=False):
-            resp = client.service.demandeFicheProduit(
-                demandeur=self.DILICOM_USER, motDePasse=self.DILICOM_PASSWORD,
-                ean13s=self.isbns[0],
-                multiple=False)
+            return [], [u"Please only search ISBNs on Dilicom."]
 
-        code_execution = resp['codeExecution']
+        envelope = envelope_skeleton.replace('{USER}', self.DILICOM_USER)\
+                                    .replace('{PASSWORD}', self.DILICOM_PASSWORD)
+        EANS = ''
+        for isbn in self.isbns:
+            skel = ean_skeleton.replace('{EAN}', isbn)
+            EANS = EANS + skel
+
+        envelope = envelope.replace('{EANS}', EANS)
+
+        session = requests.Session()
+        req = session.post(self.POST_URL, data=envelope, headers=self.HEADERS)
+        if not req.status_code == 200:
+            log.error("POST request to Dilicom responded with a non-success status code: {}".format(req.status_code))
+
+        soup = BeautifulSoup(req.text, 'lxml')
+        product_list = soup.find_all('elemreponse')  # tags are lowercase.
+        code_execution = soup.find('demandeficheproduitrs').find('codeexecution').text
         if code_execution != "OK":
-            logging.warning('Searching {} on Dilicom was not OK: {}'.format(self.query, code_execution))
-        product_list = resp['elemReponse']
+            logging.warning('The SOAP request {} on Dilicom was not OK: {}'.format(self.query, code_execution))
 
         for product in product_list:
-            if product['diagnostic'] == 'UNKNOWN_EAN':
-                log.warn(u"unknown ean: {}".format(product['ean13']))
+            code = product.find('codeexecution').text
+            if code != 'OK':
+                log.error(u"Code execution not OK for Dilicom result: {}".format(product))
                 continue
+
+            # Strangely, 'diagnostic' is not found with new query method.
+            # if product['diagnostic'] == 'UNKNOWN_EAN':
+            # log.warn(u"unknown ean: {}".format(product['ean13']))
+            # continue
+
             b = addict.Dict()
             authors = self._authors(product)
             publishers = self._publishers(product)
@@ -258,28 +250,11 @@ class Scraper():
         return bk_list, stacktraces
 
 
-def postSearch(card, isbn=None):
-    """Get a card (dictionnary) with 'details_url'.
-
-    Gets additional data:
-    - description
-
-    Check the isbn is valid. If not, return None. But that shouldn't happen !
-
-    We can give the isbn as a keyword-argument (it can happen when we
-    import data from a file). In that case, don't look for the isbn.
-
-    Return a new card (dict) complemented with the new attributes.
-
-    """
-    return card
-
-
 @annotate(words=clize.Parameter.REQUIRED)
 @autokwoargs()
 def main(*words):
     """
-    isbns: isbns to search. Dilicom's FEL à la demande doesn't accept free search.
+    Search for ISBNs. Dilicom's FEL à la demande doesn't accept free search.
     """
     if not words:
         print("Please give ISBNs as arguments")
