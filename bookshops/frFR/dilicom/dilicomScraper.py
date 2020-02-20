@@ -54,6 +54,8 @@ class Scraper():
         self.USER_AGENT = "Abelujo"
         self.HEADERS = {'SOAPAction': '""', 'Content-Type': 'text/xml; charset=utf-8'}
         # Get the search terms that are isbn
+        if isinstance(args, str):
+            args = [args]
         if args:
             self.isbns = filter(is_isbn, args)
 
