@@ -175,6 +175,7 @@ class Scraper():
             return authors
         except Exception as e:
             logging.error(u"Error getting authors for {}: {}".format(self.args, e))
+            return []
 
     @catch_errors
     def _img(self, product):
@@ -196,7 +197,7 @@ class Scraper():
             return []
 
     def _price(self, product):
-        "The public price."
+        "The public price (float)."
         try:
             price = product.find(class_='result-price').text.strip()
             price = priceFromText(price)
@@ -204,6 +205,7 @@ class Scraper():
             return price
         except Exception, e:
             print 'Erreur getting price {}'.format(e)
+            return 0.0
 
     @catch_errors
     def _isbn(self, product):
