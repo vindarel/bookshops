@@ -26,6 +26,9 @@ movies:
 
 testscrapers: spanishscraper germanscraper librairiedeparis movies
 
+unit:
+	@cd bookshops/utils && pytest
+
 build:
 	# build a source distribution
 	python setup.py sdist

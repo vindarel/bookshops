@@ -154,7 +154,7 @@ class Scraper(BaseScraper):
         return []
 
     def _price(self, product):
-        "The real price, without discounts"
+        "The real price (as float), without discounts"
         try:
             price = product.find(class_='item_prix').text.strip()
             price = priceFromText(price)

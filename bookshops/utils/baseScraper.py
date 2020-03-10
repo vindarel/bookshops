@@ -77,7 +77,7 @@ class BaseScraper(object):
 
     """
 
-    currency = '€'
+    currency = u'€'
     query = ""
     METHOD = 'GET'
 

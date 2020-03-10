@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import re
-import string
+import string as string_mod
 import time
 
 import addict
 from termcolor import colored
-import string as string_mod
+
+log = logging.getLogger(__name__)
 
 CODES_DISPO = {
     6: u"Arrêt de commercialisation",
@@ -160,13 +162,26 @@ def print_card(card, details=False):
 
 def price_fmt(price, currency):
     """
-    Return: a string, with the price formatted correctly with its currency symbol.
+    Return: a unicode string, with the price formatted correctly with its currency symbol.
 
-    Exemple: 10 € or CHF 10
+    Exemple: u"10 €" or u"CHF 10"
     """
-    if price is None or isinstance(price, str) or isinstance(price, unicode) or not currency:
+    try:
+        if price is None:
+            return price
+        if isinstance(price, str) or isinstance(price, unicode):
+            if currency and currency.lower() == 'chf':
+                return u"CHF {}".format(price)
+            elif currency:
+                if isinstance(currency, unicode):
+                    return u"{} {}".format(price, currency)
+                else:
+                    return u"{} {}".format(price, currency.decode('utf8'))
+            return u"{} {}".format(price, u'€')
+        if currency and currency.lower() == 'chf':
+            return u'CHF {:.2f}'.format(price)
+        else:
+            return u'{:.2f} €'.format(price)
+    except Exception as e:
+        log.error(u"scraper price_fmt error: {}".format(e))
         return price
-    if currency.lower() == 'chf':
-        return 'CHF {:.2f}'.format(price)
-    else:
-        return '{:.2f} €'.format(price)
