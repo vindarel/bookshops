@@ -231,7 +231,7 @@ class Scraper():
         return: a str that is correctly parsed by dateparser.parse (year and month ok,
         it gets the current day)
 
-        Exemple: '09 - 2019' -> 2019-09-13 if today is the 13th of the month.
+        Exemple: '09 - 2020' -> 2020-09-13 if today is the 13th of the month.
         It's OK for Abelujo Card.from_dict.
 
         Note that we can also return a datetime object.
