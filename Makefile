@@ -29,6 +29,10 @@ testscrapers: spanishscraper germanscraper librairiedeparis movies
 unit:
 	@cd bookshops/utils && pytest
 
+watch:
+	cd bookshops/utils && ls *.py | entr -c pytest
+
+
 build:
 	# build a source distribution
 	python setup.py sdist
