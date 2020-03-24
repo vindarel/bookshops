@@ -21,6 +21,7 @@ import logging
 import re
 import string as string_mod
 import time
+import six
 
 import addict
 from termcolor import colored
@@ -116,7 +117,7 @@ def is_isbn(it):
     ISBN_ALLOWED_LENGTHS = [13, 10]
     res = False
     pattern = re.compile("[0-9]+")
-    if (isinstance(it, unicode) or isinstance(it, str)) and \
+    if (isinstance(it, six.text_type) or isinstance(it, six.string_types)) and \
        len(it) in ISBN_ALLOWED_LENGTHS and \
        pattern.match(it):
         res = True
@@ -169,11 +170,11 @@ def price_fmt(price, currency):
     try:
         if price is None:
             return price
-        if isinstance(price, str) or isinstance(price, unicode):
+        if isinstance(price, six.string_types) or isinstance(price, six.text_type):
             if currency and currency.lower() == 'chf':
                 return u"CHF {}".format(price)
             elif currency:
-                if isinstance(currency, unicode):
+                if isinstance(currency, six.text_type):
                     return u"{} {}".format(price, currency)
                 else:
                     return u"{} {}".format(price, currency.decode('utf8'))

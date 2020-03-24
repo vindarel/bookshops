@@ -36,6 +36,7 @@ setup(
         "pyyaml==3.11",
         "tqdm",      # progress bar
         "termcolor",  # terminal color
+        "six",
     ],
 
     tests_require=[

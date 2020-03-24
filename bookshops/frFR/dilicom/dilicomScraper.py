@@ -9,6 +9,7 @@ import logging
 import logging.config
 import os
 import requests
+import six
 
 import addict
 import clize
@@ -54,7 +55,7 @@ class Scraper():
         self.USER_AGENT = "Abelujo"
         self.HEADERS = {'SOAPAction': '""', 'Content-Type': 'text/xml; charset=utf-8'}
         # Get the search terms that are isbn
-        if isinstance(args, str):
+        if isinstance(args, six.text_type) or isinstance(args, six.string_types):
             args = [args]
         if args:
             self.isbns = filter(is_isbn, args)
