@@ -1,0 +1,7 @@
+*pyc
+*sqlite
+*ods
+*~
+/build/
+/dist/
+/bookshops.egg-info/
