@@ -26,7 +26,7 @@ import os
 
 from bookshops.utils.testScraperBase import testScraperBase
 
-from momox import Scraper
+from .momox import Scraper
 
 
 class LiveTest(testScraperBase):

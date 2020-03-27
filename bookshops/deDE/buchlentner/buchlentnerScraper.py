@@ -26,22 +26,22 @@ CONSTANTS = [
     #: Name of the website
     ("SOURCE_NAME", "buchlentner"),
     #: Base url of the website
-    ("SOURCE_URL_BASE", u"http://www.buchlentner.de"),
+    ("SOURCE_URL_BASE", "http://www.buchlentner.de"),
     #: Url to which we just have to add url parameters to run the search
-    ("SOURCE_URL_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+    ("SOURCE_URL_SEARCH", "http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
     #: advanced url (search for isbns)
     # ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
-    ("SOURCE_URL_ADVANCED_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
+    ("SOURCE_URL_ADVANCED_SEARCH", "http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=Books&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&articleno=&lang=deutsch&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&title="),
     # ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/KNVAdvancedSearchResult?storeId=21711&catalogId=4099276460822233275&langId=-3&fromAdvanceSearch=AdvanceSearch&pageType=HU&language_selected=&language=&stock=&iehack=☠&offer=&avail=&media=All+Media&title=&author1=&author=&actor1=&actor=&topic=&publisher1=&publisher=&movie_category=All+Categories&movie_category=All+Categories&lang=&lang=&lang1=deutsch&lang1=deutsch&movie_subtitle=&covertype=all&covertype=all&range_price=from-to&range_price=from-to&price_from=&price_to=&range_age=from-to&range_age=from-to&age_from=&age_to=&range_age1=from-to&range_age1=from-to&age1_from=&age1_to=&range_age2=from-to&age2_from=&age2_to=&range_issuedate=from-to&range_issuedate=from-to&issuedate_from=&issuedate_to=&issue1=&issue=&nott=&articleno="),
-    ("SOURCE_URL_ISBN_SEARCH", u"http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
-    ("URL_END", u""),  # search books
-    ("TYPE_BOOK", u"book"),
+    ("SOURCE_URL_ISBN_SEARCH", "http://www.buchlentner.de/webapp/wcs/stores/servlet/SearchCmd?storeId=21711&catalogId=4099276460822233275&langId=-3&pageSize=10&beginIndex=0&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&pageView=image&pageType=PK&mediaTypes=Book:Bücher&searchBtn=SUCHEN&searchTerm="),
+    ("URL_END", ""),  # search books
+    ("TYPE_BOOK", "book"),
     #: Query parameter to search for the ean/isbn
-    ("ISBN_QPARAM", u""),
+    ("ISBN_QPARAM", ""),
     #: Query param to search for the publisher (editeur)
-    ("PUBLISHER_QPARAM", u""),
+    ("PUBLISHER_QPARAM", ""),
     #: Number of results to display
-    ("NBR_RESULTS_QPARAM", u"NOMBRE"),
+    ("NBR_RESULTS_QPARAM", "NOMBRE"),
     ("NBR_RESULTS", 12),
 ]
 
@@ -143,7 +143,7 @@ class Scraper(BaseScraper):
         try:
             plist = self.soup.find(class_='searchResultsList')
             if not plist:
-                logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
+                logging.warning('Warning: product list is null, we (apparently) didn\'t find any result')
                 return []
             plist = plist.find_all('li')
             return plist
@@ -158,8 +158,8 @@ class Scraper(BaseScraper):
             nbr_result = priceFromText(nbr_result.text)
             if not nbr_result:
                 return None
-        except Exception, e:
-            print "\nError fetching the nb of results:", e
+        except Exception as e:
+            print(("\nError fetching the nb of results:", e))
 
     @catch_errors
     def _details_url(self, product):
@@ -170,7 +170,7 @@ class Scraper(BaseScraper):
     @catch_errors
     def _title(self, product):
         title = product.find(class_='prodTitle').h3.a.text.strip()
-        logging.info(u'title: {}'.format(title))
+        logging.info('title: {}'.format(title))
         return title
 
     @catch_errors
@@ -179,9 +179,9 @@ class Scraper(BaseScraper):
         """
         authors = product.find(class_='prodSubTitle').h3.a.text.strip()
         authors = authors.split('\n')
-        authors = filter(lambda it: it != u"", authors)
+        authors = [it for it in authors if it != ""]
         authors = [it.strip() for it in authors]
-        logging.info(u'authors: ' + ', '.join(a for a in authors))
+        logging.info('authors: ' + ', '.join(a for a in authors))
         return authors
 
     @catch_errors
@@ -202,8 +202,8 @@ class Scraper(BaseScraper):
             price = priceFromText(price)
             price = priceStr2Float(price)
             return price
-        except Exception, e:
-            print 'Erreur getting price {}'.format(e)
+        except Exception as e:
+            print(('Erreur getting price {}'.format(e)))
 
     @catch_errors
     def _isbn(self, product):
@@ -277,7 +277,7 @@ def _isbn(details_url):
         soup = BeautifulSoup(req.content, "lxml")
         isbn = soup.find(class_="col49 floatRight")
         isbn = isbnlib.get_isbnlike(isbn.text)
-        isbn = filter(lambda it: it.startswith('978'), isbn)
+        isbn = [it for it in isbn if it.startswith('978')]
         if isbn:
             isbn = isbnlib.canonical(isbn[0])
             log.info("Found isbn of url {}: {}".format(details_url, isbn))
@@ -333,7 +333,7 @@ def main(isbn=False, timing=False, *words):
     words: keywords to search (or isbn/ean)
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     import time
     start = time.time()
@@ -348,10 +348,10 @@ def main(isbn=False, timing=False, *words):
         bklist = pool.map(postSearch, bklist)
 
     end = time.time()
-    print " Nb results: {}".format(len(bklist))
+    print((" Nb results: {}".format(len(bklist))))
     if timing:
-        print "Took {} s".format(end - start)
-    map(print_card, bklist)
+        print(("Took {} s".format(end - start)))
+    list(map(print_card, bklist))
 
 
 def run():

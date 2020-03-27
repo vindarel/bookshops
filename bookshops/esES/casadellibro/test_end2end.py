@@ -26,8 +26,8 @@ import unittest
 
 from bookshops.utils.testScraperBase import testScraperBase
 
-from casadellibroScraper import Scraper
-from casadellibroScraper import postSearch
+from .casadellibroScraper import Scraper
+from .casadellibroScraper import postSearch
 
 
 class LiveTest(testScraperBase):

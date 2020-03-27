@@ -34,8 +34,8 @@ import unittest
 
 from bookshops.utils.testScraperBase import testScraperBase
 
-from buchlentnerScraper import Scraper
-from buchlentnerScraper import postSearch
+from .buchlentnerScraper import Scraper
+from .buchlentnerScraper import postSearch
 
 
 class LiveTest(testScraperBase):

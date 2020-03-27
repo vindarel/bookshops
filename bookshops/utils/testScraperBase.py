@@ -29,8 +29,7 @@ def filterAttribute(attr, dataresult, fdata):
 
     return: a list
     """
-    return filter(lambda it: it.get(attr) == dataresult.get(attr),
-                  fdata)
+    return [it for it in fdata if it.get(attr) == dataresult.get(attr)]
 
 
 class testScraperBase(unittest.TestCase):
@@ -82,10 +81,10 @@ class testScraperBase(unittest.TestCase):
                              "details_url"]:
                     # Better: use nose's test generators to test all attributes at once.
                     if attr in dataresults:
-                        print "Checking {}.".format(attr)
+                        print(("Checking {}.".format(attr)))
                         self.assertEqual(filtered_res[0].get(attr), dataresults.get(attr))
                     else:
-                        print "Not checking {}".format(attr)
+                        print(("Not checking {}".format(attr)))
 
     def testPostSearch(self):
         for bktest in self.datatest:

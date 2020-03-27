@@ -17,7 +17,7 @@
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-from discogsConnector import Scraper
+from .discogsConnector import Scraper
 
 
 class TestDiscogs(unittest.TestCase):

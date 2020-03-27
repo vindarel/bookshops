@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from __future__ import print_function
-from dilicomScraper import Scraper
+
+from .dilicomScraper import Scraper
 
 if __name__ == '__main__':
     """
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     assert bk.get('authors_repr') == 'JONAS/RIHN'
     assert bk.get('data_source') == 'dilicom'
     assert bk.get('date_publication')
-    assert bk.get('details_url') == u'https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean=9782732486819&emet='
+    assert bk.get('details_url') == 'https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean=9782732486819&emet='
     assert bk.get('fmt') is None
     assert bk.get('height') == 320
     assert bk.get('img') is None

@@ -29,9 +29,9 @@ from termcolor import colored
 log = logging.getLogger(__name__)
 
 CODES_DISPO = {
-    6: u"Arrêt de commercialisation",
-    1: u"Disponible",  # ?
-    0: u"disponibilité inconnue",
+    6: "Arrêt de commercialisation",
+    1: "Disponible",  # ?
+    0: "disponibilité inconnue",
 }
 
 
@@ -59,7 +59,7 @@ class Timer(object):
     def __exit__(self, exc_type, exc_val, traceback):
         self.end = time.time()
         if not self.silent:
-            print "{} lasted: {} sec".format(self.name, self.end - self.start)
+            print(("{} lasted: {} sec".format(self.name, self.end - self.start)))
 
 
 def priceFromText(text):
@@ -148,17 +148,17 @@ def print_card(card, details=False):
     TRUNCATE = 19
     currency = card.get('currency', '€')
 
-    print colored(" " + card.title, "blue")
+    print((colored(" " + card.title, "blue")))
     # Great formatting guide: https://pyformat.info/ :)
-    print "   {:{}.{}} {:>{}.{}} {:4}   {}".\
+    print(("   {:{}.{}} {:>{}.{}} {:4}   {}".\
         format(", ".join(card.authors or []), COL_WIDTH, TRUNCATE,
                ", ".join(card.publishers or []), COL_WIDTH, TRUNCATE,
                price_fmt(card.price, currency),
-               card.isbn if card.isbn else "")
+               card.isbn if card.isbn else "")))
     if details:
-        print u"   Date publication: {}".format(card.date_publication)
+        print(("   Date publication: {}".format(card.date_publication)))
         if card.get('availability'):
-            print u"   {}".format(CODES_DISPO.get(card.availability))
+            print(("   {}".format(CODES_DISPO.get(card.availability))))
 
 
 def price_fmt(price, currency):
@@ -172,17 +172,17 @@ def price_fmt(price, currency):
             return price
         if isinstance(price, six.string_types) or isinstance(price, six.text_type):
             if currency and currency.lower() == 'chf':
-                return u"CHF {}".format(price)
+                return "CHF {}".format(price)
             elif currency:
                 if isinstance(currency, six.text_type):
-                    return u"{} {}".format(price, currency)
+                    return "{} {}".format(price, currency)
                 else:
-                    return u"{} {}".format(price, currency.decode('utf8'))
-            return u"{} {}".format(price, u'€')
+                    return "{} {}".format(price, currency.decode('utf8'))
+            return "{} {}".format(price, '€')
         if currency and currency.lower() == 'chf':
-            return u'CHF {:.2f}'.format(price)
+            return 'CHF {:.2f}'.format(price)
         else:
-            return u'{:.2f} €'.format(price)
+            return '{:.2f} €'.format(price)
     except Exception as e:
-        log.error(u"scraper price_fmt error: {}".format(e))
+        log.error("scraper price_fmt error: {}".format(e))
         return price

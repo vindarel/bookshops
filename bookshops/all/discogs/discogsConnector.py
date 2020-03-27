@@ -126,7 +126,7 @@ class Scraper:
             try:
                 json_res = json.loads(res.text)
                 uri = json_res["results"][0]["uri"]
-            except Exception, e:
+            except Exception as e:
                 log.error("Error searching ean %s\n: " % (self.ean, e))
                 return None, traceback.format_exc()
 
@@ -156,7 +156,7 @@ class Scraper:
                     # images, genre,…
                     log.debug("found album %s by %s" % (card["title"], card["authors"]))
 
-                except Exception, e:
+                except Exception as e:
                     log.error("Error on getting release informations of %s\n %s " % (release_url, e))
                     log.error("Traceback: %s" % (traceback.format_exc()))
                     self.stacktraces.append(traceback.format_exc())

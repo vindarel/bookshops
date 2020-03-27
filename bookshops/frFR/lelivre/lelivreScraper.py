@@ -66,27 +66,27 @@ class Scraper():
         #: Name of the website
         self.SOURCE_NAME = "lelivre.ch"
         #: Base url of the website
-        self.SOURCE_URL_BASE = u"https://www.lelivre.ch"
+        self.SOURCE_URL_BASE = "https://www.lelivre.ch"
         #: GET or POST to run the search? GET by default.
         self.METHOD = 'POST'
         #: POST paramaters:
         self.PARAMS = {'inputSearch': ''}
 
         #: Url to search.
-        self.SOURCE_URL_SEARCH = u"https://www.lelivre.ch/Results"
+        self.SOURCE_URL_SEARCH = "https://www.lelivre.ch/Results"
         #: advanced url
-        self.SOURCE_URL_ADVANCED_SEARCH = u""
+        self.SOURCE_URL_ADVANCED_SEARCH = ""
         #: the url to search for an isbn.
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        self.URL_END = u""
-        self.TYPE_BOOK = u"book"
+        self.URL_END = ""
+        self.TYPE_BOOK = "book"
         #: Query parameter to search for the ean/isbn
-        self.ISBN_QPARAM = u""
+        self.ISBN_QPARAM = ""
         #: Query param to search for the publisher (editeur)
-        self.PUBLISHER_QPARAM = u"EDITEUR"
+        self.PUBLISHER_QPARAM = "EDITEUR"
         #: Number of results to display
-        self.NBR_RESULTS_QPARAM = u""
+        self.NBR_RESULTS_QPARAM = ""
         self.NBR_RESULTS = 12
 
         self.USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
@@ -110,9 +110,9 @@ class Scraper():
         self.soup = None
         isbns = []
         if args:
-            isbns = filter(is_isbn, args)
+            isbns = list(filter(is_isbn, args))
         if len(isbns) > 1:
-            logging.info(u"Searching many isbns at once is not supported with this datasource so far.")
+            logging.info("Searching many isbns at once is not supported with this datasource so far.")
             return
         if isbns:
             self.PARAMS['inputSearch'] = isbns[0]
@@ -121,7 +121,7 @@ class Scraper():
 
         self.req = requests.post(self.url, params=self.PARAMS, headers=self.HEADERS)
         if self.req.status_code != 200:
-            logging.warning(u"Our search status code is not 'success'.")
+            logging.warning("Our search status code is not 'success'.")
         self.soup = BeautifulSoup(self.req.text, 'lxml')
 
     def _product_list(self):
@@ -132,10 +132,10 @@ class Scraper():
         try:
             plist = self.soup.find(class_='result-table')
             if not plist:
-                logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
+                logging.warning('Warning: product list is null, we (apparently) didn\'t find any result')
                 return []
             if not plist:
-                logging.info(u"No product list for search {} on {}.".format(self.args, self.DATA_SOURCE_NAME))
+                logging.info("No product list for search {} on {}.".format(self.args, self.DATA_SOURCE_NAME))
             plist = plist.find_all(class_='result-item')
             return plist
         except Exception as e:
@@ -160,7 +160,7 @@ class Scraper():
             title = product.find(class_='result-details').find('h2').text.strip()
             return title.capitalize()
         except Exception as e:
-            logging.error(u"Could not find title when searching for {}: {}".format(self.args, e))
+            logging.error("Could not find title when searching for {}: {}".format(self.args, e))
             return ""
 
     @catch_errors
@@ -170,11 +170,11 @@ class Scraper():
         try:
             authors = product.find(class_='result-author').text
             authors = authors.split('\n')
-            authors = filter(lambda it: it not in ["", '', u""], authors)
+            authors = [it for it in authors if it not in ["", '', ""]]
             authors = [it.strip().capitalize() for it in authors]
             return authors
         except Exception as e:
-            logging.error(u"Error getting authors for {}: {}".format(self.args, e))
+            logging.error("Error getting authors for {}: {}".format(self.args, e))
             return []
 
     @catch_errors
@@ -193,7 +193,7 @@ class Scraper():
             res = find_dd(terms, descriptions, 'diteur')  # leave out É or é.
             return [res]
         except Exception as e:
-            logging.error(u"Error getting publisher(s) of {}: {}".format(self.args, e))
+            logging.error("Error getting publisher(s) of {}: {}".format(self.args, e))
             return []
 
     def _price(self, product):
@@ -203,8 +203,8 @@ class Scraper():
             price = priceFromText(price)
             price = priceStr2Float(price)
             return price
-        except Exception, e:
-            print 'Erreur getting price {}'.format(e)
+        except Exception as e:
+            print(('Erreur getting price {}'.format(e)))
             return 0.0
 
     @catch_errors
@@ -327,11 +327,11 @@ def main(review=False, *words):
     words: keywords to search, or one ISBN.
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print " Nb results: {}".format(len(bklist))
+    print((" Nb results: {}".format(len(bklist))))
     bklist = [postSearch(it) for it in bklist]
     [print_card(it, details=True) for it in bklist]
 

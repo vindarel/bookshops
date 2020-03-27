@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Abelujo.  If not, see <http://www.gnu.org/licenses/>.
 
+
+
 import logging
 
 import clize
@@ -97,13 +99,13 @@ def main(*words):
     words: keywords to search (or isbn/ean)
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     with Timer("call to scraper", silent=True):
         scrap = Scraper(*words)
         bklist, errors = scrap.search()
-        print " Nb results: {}".format(len(bklist))
-        map(print_card, bklist)
+        print((" Nb results: {}".format(len(bklist))))
+        list(map(print_card, bklist))
 
 
 def run():

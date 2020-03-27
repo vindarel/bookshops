@@ -21,7 +21,7 @@ import requests
 import sys
 import unittest
 
-from discogsConnector import Scraper as scraper
+from .discogsConnector import Scraper as scraper
 
 common_dir = os.path.dirname(os.path.abspath(__file__))
 cdp, _ = os.path.split(common_dir)
@@ -52,7 +52,7 @@ class TestDiscogsE2E(unittest.TestCase):
         self.assertEqual(traces, [])
         for key in ["authors", "title", "details_url", "format", "tracklist", "year"]:
             self.assertTrue(res[key])
-        self.assertEqual(res["authors"], u"Kyuss")
+        self.assertEqual(res["authors"], "Kyuss")
 
     def testKeyWordsSearch(self):
         kw = ["kyuss", "circus"]
@@ -60,7 +60,7 @@ class TestDiscogsE2E(unittest.TestCase):
         res, stacktraces = self.s.search()
         self.assertTrue(res)
         self.assertEqual(stacktraces, [], "the search threw the following exceptions:\n%s" % (stacktraces,))
-        self.assertEqual(res[0]["title"], u'Kyuss - ...And The Circus Leaves Town')
+        self.assertEqual(res[0]["title"], 'Kyuss - ...And The Circus Leaves Town')
 
         # Check we have access to the image:
         img = res[0]['img']

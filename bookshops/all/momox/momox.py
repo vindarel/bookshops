@@ -26,22 +26,22 @@ class Scraper(BaseScraper):
         #: Name of the website
         self.SOURCE_NAME = "momox"
         #: Base url of the website
-        self.SOURCE_URL_BASE = u"https://www.momox-shop.fr"
+        self.SOURCE_URL_BASE = "https://www.momox-shop.fr"
         #: Url to which we just have to add url parameters to run the search
-        self.SOURCE_URL_SEARCH = u"https://www.momox-shop.fr/films-C09/?fcIsSearch=1&searchparam="
+        self.SOURCE_URL_SEARCH = "https://www.momox-shop.fr/films-C09/?fcIsSearch=1&searchparam="
         #: advanced url (searcf for isbns)
-        self.SOURCE_URL_ADVANCED_SEARCH = u""
+        self.SOURCE_URL_ADVANCED_SEARCH = ""
         #: the url to search for an isbn: no change.
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        self.URL_END = u""
-        self.TYPE_BOOK = u"dvd"
+        self.URL_END = ""
+        self.TYPE_BOOK = "dvd"
         #: Query parameter to search for the ean/isbn
-        self.ISBN_QPARAM = u""
+        self.ISBN_QPARAM = ""
         #: Query param to search for the publisher (editeur)
-        self.PUBLISHER_QPARAM = u""
+        self.PUBLISHER_QPARAM = ""
         #: Number of results to display
-        self.NBR_RESULTS_QPARAM = u""
+        self.NBR_RESULTS_QPARAM = ""
         self.NBR_RESULTS = 12
 
     def __init__(self, *args, **kwargs):
@@ -54,7 +54,7 @@ class Scraper(BaseScraper):
         try:
             plist = self.soup.find(id='body')
             if not plist:
-                logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
+                logging.warning('Warning: product list is null, we (apparently) didn\'t find any result')
                 return []
             plist = plist.find_all(class_='mx-product-list-item clearfix')
             return plist
@@ -72,10 +72,10 @@ class Scraper(BaseScraper):
             else:
                 nbr = res.group(0)
                 self.nbr_result = int(nbr)
-                logging.info(u'Nb of results: {}'.format(nbr))
+                logging.info('Nb of results: {}'.format(nbr))
                 return self.nbr_result
-        except Exception, e:
-            logging.info(u"Could not fetch the nb of results: {}".format(e))
+        except Exception as e:
+            logging.info("Could not fetch the nb of results: {}".format(e))
 
     @catch_errors
     def _details_url(self, product):
@@ -85,7 +85,7 @@ class Scraper(BaseScraper):
     @catch_errors
     def _title(self, product):
         title = product.find(class_='mx-product-list-item-title').text.strip()
-        logging.info(u'title: {}'.format(title))
+        logging.info('title: {}'.format(title))
         return title
 
     @catch_errors
@@ -94,9 +94,9 @@ class Scraper(BaseScraper):
         """
         authors = product.find(class_='mx-product-list-item-manufacturer').text.strip()
         authors = authors.split('\n')
-        authors = filter(lambda it: it.strip() not in [u"", "", u"de:", "de:"], authors)
+        authors = [it for it in authors if it.strip() not in ["", "", "de:", "de:"]]
         authors = [it.strip() for it in authors]
-        logging.info(u'authors: {}'.format(authors))
+        logging.info('authors: {}'.format(authors))
         return authors
 
     @catch_errors
@@ -111,7 +111,7 @@ class Scraper(BaseScraper):
             price = priceFromText(price)
             price = priceStr2Float(price)
             return price
-        except Exception, e:
+        except Exception as e:
             logging.info('Erreur getting price {}'.format(e))
 
     @catch_errors
@@ -177,13 +177,13 @@ def main(review=False, *words):
     words: keywords to search (or isbn/ean)
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print " Nb results: {}".format(len(bklist))
+    print((" Nb results: {}".format(len(bklist))))
 
-    map(print_card, bklist)
+    list(map(print_card, bklist))
 
 
 def run():

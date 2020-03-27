@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+
+
 import logging
 from termcolor import colored
 
@@ -39,22 +42,22 @@ class Scraper(BaseScraper):
         #: Name of the website
         self.SOURCE_NAME = "librairiedeparis"
         #: Base url of the website
-        self.SOURCE_URL_BASE = u"http://www.librairie-de-paris.fr"
+        self.SOURCE_URL_BASE = "http://www.librairie-de-paris.fr"
         #: Url to which we just have to add url parameters to run the search
-        self.SOURCE_URL_SEARCH = u"http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=simple&LIVREANCIEN=2&MOTS="
+        self.SOURCE_URL_SEARCH = "http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=simple&LIVREANCIEN=2&MOTS="
         #: advanced url (searcf for isbns)
-        self.SOURCE_URL_ADVANCED_SEARCH = u"http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=appro&LIVREANCIEN=2&MOTS="
+        self.SOURCE_URL_ADVANCED_SEARCH = "http://www.librairie-de-paris.fr/listeliv.php?RECHERCHE=appro&LIVREANCIEN=2&MOTS="
         #: the url to search for an isbn.
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
-        self.URL_END = u"&x=0&y=0"  # search books
-        self.TYPE_BOOK = u"book"
+        self.URL_END = "&x=0&y=0"  # search books
+        self.TYPE_BOOK = "book"
         #: Query parameter to search for the ean/isbn
-        self.ISBN_QPARAM = u""
+        self.ISBN_QPARAM = ""
         #: Query param to search for the publisher (editeur)
-        self.PUBLISHER_QPARAM = u"EDITEUR"
+        self.PUBLISHER_QPARAM = "EDITEUR"
         #: Number of results to display
-        self.NBR_RESULTS_QPARAM = u"NOMBRE"
+        self.NBR_RESULTS_QPARAM = "NOMBRE"
         self.NBR_RESULTS = 12
 
     def __init__(self, *args, **kwargs):
@@ -68,14 +71,14 @@ class Scraper(BaseScraper):
 
         Return: a str, the necessary url part to add at the end.
         """
-        if self.page == 1 or self.page == u"1" or self.page == "1":
+        if self.page == 1 or self.page == "1" or self.page == "1":
             return ""
 
-        page_qparam = u""
-        if type(self.page) in [type(u"u"), type("str")]:
+        page_qparam = ""
+        if type(self.page) in [type("u"), type("str")]:
             self.page = int(self.page)
         if self.NBR_RESULTS and self.NBR_RESULTS_QPARAM:
-            page_qparam = u"&{}={}&{}={}".format(self.NBR_RESULTS_QPARAM,
+            page_qparam = "&{}={}&{}={}".format(self.NBR_RESULTS_QPARAM,
                                                  self.NBR_RESULTS,
                                                  "DEBUT",
                                                  self.NBR_RESULTS * (self.page - 1))
@@ -86,10 +89,10 @@ class Scraper(BaseScraper):
         try:
             plist = self.soup.find(class_='resultsList')
             if not plist:
-                logging.warning(u'Warning: product list is null, we (apparently) didn\'t find any result')
+                logging.warning('Warning: product list is null, we (apparently) didn\'t find any result')
                 return []
             plist = plist.find_all('li', recursive=False)  # only direct <li> children.
-            # logging.debug(u"found plist: {}".format(len(plist)))
+            # logging.debug("found plist: {}".format(len(plist)))
             return plist
         except Exception as e:
             logging.error("Error while getting product list. Will return []. Error: {}".format(e))
@@ -102,14 +105,14 @@ class Scraper(BaseScraper):
             nbr_result = nbr_resultl_list[0].text.strip()
             res = nbr_result.split('sur')[-1]
             if not res:
-                print 'Error matching nbr_result'
+                print('Error matching nbr_result')
             else:
                 nbr = int(res.strip())
                 self.NBR_RESULTS = nbr
-                logging.info(u'Nb of results: {}'.format(nbr))
+                logging.info('Nb of results: {}'.format(nbr))
                 return nbr
-        except Exception, e:
-            logging.info(u"Could not fetch the nb of results: {}".format(e))
+        except Exception as e:
+            logging.info("Could not fetch the nb of results: {}".format(e))
 
     @catch_errors
     def _details_url(self, product):
@@ -120,7 +123,7 @@ class Scraper(BaseScraper):
     @catch_errors
     def _title(self, product):
         title = product.find(class_='livre_titre').text.strip()
-        logging.info(u'title: {}'.format(title))
+        logging.info('title: {}'.format(title))
         return title.capitalize()
 
     @catch_errors
@@ -130,9 +133,9 @@ class Scraper(BaseScraper):
         authors = product.find(class_='livre_auteur').text  # xxx many authors ? see list_authors
         authors = authors.split('\n')
         # TODO: multiple authors
-        authors = filter(lambda it: it != u"", authors)
+        authors = [it for it in authors if it != ""]
         authors = [it.strip().capitalize() for it in authors]
-        logging.info(u'authors: ' + ', '.join(a for a in authors))
+        logging.info('authors: ' + ', '.join(a for a in authors))
         return authors
 
     @catch_errors
@@ -150,7 +153,7 @@ class Scraper(BaseScraper):
             # TODO: multiple publishers ?
             return [pub]
         except Exception as e:
-            logging.error(u"Error scraping the publisher(s): {}".format(e))
+            logging.error("Error scraping the publisher(s): {}".format(e))
         return []
 
     def _price(self, product):
@@ -160,8 +163,8 @@ class Scraper(BaseScraper):
             price = priceFromText(price)
             price = priceStr2Float(price)
             return price
-        except Exception, e:
-            print 'Erreur getting price {}'.format(e)
+        except Exception as e:
+            print(('Erreur getting price {}'.format(e)))
 
     @catch_errors
     def _isbn(self, product):
@@ -171,7 +174,7 @@ class Scraper(BaseScraper):
         res = product.find(class_="editeur-collection-parution").text.split('\n')
         isbn = res[-2].strip()
         if not is_isbn(isbn):
-            res = filter(lambda it: is_isbn(it), res)
+            res = [it for it in res if is_isbn(it)]
             isbn = res[0]
         return isbn
 
@@ -195,20 +198,20 @@ class Scraper(BaseScraper):
                 key = k.contents[0].strip().lower()
                 if key == 'ean :':
                     details['isbn'] = k.em.text.strip()
-                    logging.info(u'isbn: ' + details['isbn'])
+                    logging.info('isbn: ' + details['isbn'])
                 elif key == 'editeur :':
                     details['editor'] = k.em.text.strip()
-                    logging.info(u'editor: ' + details['editor'])
+                    logging.info('editor: ' + details['editor'])
                 elif key == 'isbn :':
                     details['isbn'] = k.em.text.strip()
-                    logging.info(u'isbn: ' + details['isbn'])
+                    logging.info('isbn: ' + details['isbn'])
 
             if not details:
-                logging.warning(u"Warning: we didn't get any details (isbn,…) about the book")
+                logging.warning("Warning: we didn't get any details (isbn,…) about the book")
             return details
 
-        except Exception, e:
-            print 'Error on getting book details', e
+        except Exception as e:
+            print(('Error on getting book details', e))
 
     @catch_errors
     def _date_publication(self, product):
@@ -256,7 +259,7 @@ class Scraper(BaseScraper):
         """
         if self.cached_results is not None:
             log.debug("search: hit cache.")
-            # print "-- cache hit for ".format(self.ARGS)
+            # print("-- cache hit for ".format(self.ARGS))
             assert isinstance(self.cached_results, list)
             return self.cached_results, []
 
@@ -353,27 +356,27 @@ def reviews(card):
     # silent=False
     silent = True
     # Search on lmda.net magazine.
-    url = u"https://framabee.org/?q=site%3Almda.net+site%3Afranceculture.org {{ search }} &categories=general"
+    url = "https://framabee.org/?q=site%3Almda.net+site%3Afranceculture.org {{ search }} &categories=general"
     # on one website only with framabee :/
-    # url = u"https://framabee.org/?q=site%3Afranceculture.org {{ search }} &categories=general"
+    # url = "https://framabee.org/?q=site%3Afranceculture.org {{ search }} &categories=general"
     # on all internet:
-    # url = u"https://framabee.org/?q={{ search }}&categories=general"
+    # url = "https://framabee.org/?q={{ search }}&categories=general"
     if not card.get('authors') or not card.get('title'):
         return None
 
-    urltosearch = url.replace('{{ search }}', u'{}'.format(rmPunctuation(card['title'])))
-    logging.info(u"request of reviews for {}...".format(urltosearch))
+    urltosearch = url.replace('{{ search }}', '{}'.format(rmPunctuation(card['title'])))
+    logging.info("request of reviews for {}...".format(urltosearch))
     with Timer("request on framabee", silent=silent):   # False: print output.
         req = requests.get(urltosearch)
     if not req.status_code == 200:
-        logging.info(u"status code for request on {}: {}".format(card['title'], req.status_code))
+        logging.info("status code for request on {}: {}".format(card['title'], req.status_code))
         return None
 
     soup = BeautifulSoup(req.content, 'lxml')
     try:
         links = soup.find_all(class_='result')
     except Exception as e:
-        print u"Error finding results in html: {}".format(e)
+        print(("Error finding results in html: {}".format(e)))
         return None
 
     if not links:
@@ -383,7 +386,7 @@ def reviews(card):
     try:
         links = [it.h4.a.attrs['href'] for it in links]
     except Exception as e:
-        print u"Error extracting href from soup: {}".format(e)
+        print(("Error extracting href from soup: {}".format(e)))
         return None
 
     # only a few reviews. All won't be relevant.
@@ -395,13 +398,13 @@ def reviews(card):
         import multiprocessing
         pool = multiprocessing.Pool(8)
         revs = pool.map(_scrape_review, links)
-        revs = filter(lambda it: it is not None, revs)
+        revs = [it for it in revs if it is not None]
 
         # don't keep zombi processes; the context manager didn't seem to work.
         pool.terminate()
         pool.join()
     except Exception as e:
-        print u"Error getting reviews: {}".format(e)
+        print(("Error getting reviews: {}".format(e)))
 
     return revs
 
@@ -415,23 +418,23 @@ def main(review=False, *words):
     words: keywords to search (or isbn/ean)
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print " Nb results: {}/{}".format(len(bklist), scrap.NBR_RESULTS)
+    print((" Nb results: {}/{}".format(len(bklist), scrap.NBR_RESULTS)))
     bklist = [postSearch(it) for it in bklist]
 
     # Get reviews:
     if review:
         rev = _scrape_review('http://www.lmda.net/din/tit_lmda.php?Id=17702')
         revs = reviews(bklist[0])
-        print "We got {} reviews:".format(len(revs))
+        print(("We got {} reviews:".format(len(revs))))
         for rev in revs:
-            print rev['short_summary']
-            print colored(rev['url'], 'grey')
+            print((rev['short_summary']))
+            print((colored(rev['url'], 'grey')))
 
-    map(print_card, bklist)
+    list(map(print_card, bklist))
 
 
 def run():

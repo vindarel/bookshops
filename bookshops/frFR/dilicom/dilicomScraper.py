@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
+
+
 
 from bs4 import BeautifulSoup
 import datetime
@@ -48,7 +49,7 @@ class Scraper():
         self.POST_URL = 'http://websfel.centprod.com/v2/DemandeFicheProduit'
         self.DILICOM_USER = os.getenv('DILICOM_USER')
         self.DILICOM_PASSWORD = os.getenv('DILICOM_PASSWORD')
-        self.SOURCE_URL_FICHE_PRODUIT = u"https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean={}"
+        self.SOURCE_URL_FICHE_PRODUIT = "https://dilicom-prod.centprod.com/catalogue/detail_article_consultation.html?ean={}"
 
     def __init__(self, *args, **kwargs):
         self.set_constants()
@@ -58,7 +59,7 @@ class Scraper():
         if isinstance(args, six.text_type) or isinstance(args, six.string_types):
             args = [args]
         if args:
-            self.isbns = filter(is_isbn, args)
+            self.isbns = list(filter(is_isbn, args))
 
         # Get the search keywords without isbns
         # unsupported by Dilicom.
@@ -220,8 +221,8 @@ class Scraper():
         for product in product_list:
             code = product.find('codeexecution').text
             if code != 'OK':
-                log.error(u"Code execution not OK for Dilicom result: {}".format(product))
-                stacktraces.append(u"Dilicom error: {}".format(code))
+                log.error("Code execution not OK for Dilicom result: {}".format(product))
+                stacktraces.append("Dilicom error: {}".format(code))
                 continue
 
             isbn = self._isbn(product)
@@ -229,10 +230,10 @@ class Scraper():
             diagnostic = product.find('diagnostic')
             if diagnostic:
                 if diagnostic.text == 'UNKNOWN_EAN':
-                    stacktraces.append(u"EAN inconnu {}".format(isbn))
+                    stacktraces.append("EAN inconnu {}".format(isbn))
                 else:
                     # All of them should be caught by != OK.
-                    stacktraces.append(u"Dilicom error: {}".format(diagnostic))
+                    stacktraces.append("Dilicom error: {}".format(diagnostic))
                 continue
 
             b = addict.Dict()
@@ -270,16 +271,16 @@ class Scraper():
         """
 
         if not self.DILICOM_USER or not self.DILICOM_PASSWORD:
-            log.warn(u"Dilicom: no DILICOM_USER or DILICOM_PASSWORD found. Aborting the search.")
-            return [], [u"No user and password found for Dilicom connection."]
+            log.warn("Dilicom: no DILICOM_USER or DILICOM_PASSWORD found. Aborting the search.")
+            return [], ["No user and password found for Dilicom connection."]
 
         # Le FEL à la demande ne permet pas de recherche libre!
         if not self.isbns:
-            log.warn(u"Dilicom's FEL à la demande only wants ISBNs, and none was given. Return.")
-            return [], [u"Please only search ISBNs on Dilicom."]
+            log.warn("Dilicom's FEL à la demande only wants ISBNs, and none was given. Return.")
+            return [], ["Please only search ISBNs on Dilicom."]
 
         if len(self.isbns) > 100:
-            log.debug(u"Searching for more than 100 ISBNs.")
+            log.debug("Searching for more than 100 ISBNs.")
 
         isbn_groups = toolz.partition_all(100, self.isbns)
 
@@ -303,7 +304,7 @@ def main(*words):
         print("Please give ISBNs as arguments")
         return
 
-    isbns = filter(is_isbn, words)
+    isbns = list(filter(is_isbn, words))
     if not isbns:
         print("Dilicom n'accepte pas la recherche libre par mots-clefs. Veuillez chercher par ISBN(s).")
         exit(0)

@@ -26,8 +26,8 @@ import os
 
 from bookshops.utils.testScraperBase import testScraperBase
 
-from librairiedeparisScraper import Scraper
-from librairiedeparisScraper import postSearch
+from .librairiedeparisScraper import Scraper
+from .librairiedeparisScraper import postSearch
 
 
 class LiveTest(testScraperBase):

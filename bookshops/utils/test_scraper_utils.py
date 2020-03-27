@@ -8,13 +8,13 @@ aka
 cd bookshops/utils && pytest
 """
 
-from scraperUtils import price_fmt
+from .scraperUtils import price_fmt
 
 def test_price_fmt():
-    assert u'10.00 €' == price_fmt(10, None)
-    assert u'10.00 €' == price_fmt(10.0, None)
+    assert '10.00 €' == price_fmt(10, None)
+    assert '10.00 €' == price_fmt(10.0, None)
     assert 'CHF 10.00' == price_fmt(10, 'CHF')
     assert 'CHF 10' == price_fmt("10", 'chf')
-    assert u'10 €' == price_fmt(u"10", None)
-    assert u'10 €' == price_fmt(u"10", u'€')
-    assert u'10 €' == price_fmt(u"10", '€')
+    assert '10 €' == price_fmt("10", None)
+    assert '10 €' == price_fmt("10", '€')
+    assert '10 €' == price_fmt("10", '€')

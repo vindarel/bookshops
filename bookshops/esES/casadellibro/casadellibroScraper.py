@@ -48,14 +48,14 @@ class Scraper(BaseScraper):
         #: Name of the website
         self.SOURCE_NAME = "casadellibro"
         #: Base url of the website
-        self.SOURCE_URL_BASE = u"http://www.casadellibro.com"
+        self.SOURCE_URL_BASE = "http://www.casadellibro.com"
         #: Url to which we just have to add url parameters to run the search
-        self.SOURCE_URL_SEARCH = u"http://www.casadellibro.com/busqueda-generica?busqueda="
+        self.SOURCE_URL_SEARCH = "http://www.casadellibro.com/busqueda-generica?busqueda="
         self.SOURCE_URL_ADVANCED_SEARCH = self.SOURCE_URL_SEARCH
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
         #: Optional suffix to the search url (may help to filter types, i.e. don't show e-books).
         self.TYPE_BOOK = "book"
-        self.URL_END = u"&idtipoproducto=-1&tipoproducto=1&nivel=5"
+        self.URL_END = "&idtipoproducto=-1&tipoproducto=1&nivel=5"
         self.ISBN_QPARAM = ""
 
     query = ""
@@ -83,7 +83,7 @@ class Scraper(BaseScraper):
     @catch_errors
     def _price(self, product):
         price = product.find(class_="currentPrice").text
-        price = price.replace(u"\u20ac", "").strip()  # remove euro sign.
+        price = price.replace("\\u20ac", "").strip()  # remove euro sign.
         price = priceStr2Float(price)
         return price
 
@@ -156,13 +156,13 @@ def main(*words):
     words: keywords to search (or isbn/ean)
     """
     if not words:
-        print "Please give keywords as arguments"
+        print("Please give keywords as arguments")
         return
     scrap = Scraper(*words)
     bklist, errors = scrap.search()
-    print " Nb results: {}".format(len(bklist))
+    print((" Nb results: {}".format(len(bklist))))
     bklist = [postSearch(it) for it in bklist]
-    map(print_card, bklist)
+    list(map(print_card, bklist))
 
 
 def run():

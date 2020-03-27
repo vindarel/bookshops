@@ -80,7 +80,7 @@ setup(
         "Intended Audience :: End Users/Desktop",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",  # noqa: E501
         "Topic :: Utilities",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
         "Topic :: Internet",
         "Topic :: Software Development :: Libraries",
     ],

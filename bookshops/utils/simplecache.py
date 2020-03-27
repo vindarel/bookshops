@@ -23,7 +23,7 @@ Without dependencies.
 
 Not saved to disk, cleared each day.
 """
-from __future__ import print_function
+
 
 import datetime
 import logging
@@ -63,7 +63,7 @@ def get_cache(source_name, args):
                     del CACHED_CONTENT[source_name][stringified_args]
                     return
                 except Exception as e:
-                    log.error(u"Could not delete the cache: {}".format(e))
+                    log.error("Could not delete the cache: {}".format(e))
     except Exception as e:
         log.error("Could not save cache: {}".format(e))
         return
@@ -84,5 +84,5 @@ def cache_results(source_name, args, results):
         log.debug("Saved cache.")
         return True
     except Exception as e:
-        log.error(u"Failed to cache results for {} with args {}: {}".
+        log.error("Failed to cache results for {} with args {}: {}".
                   format(source_name, args, e))

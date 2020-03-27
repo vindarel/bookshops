@@ -77,7 +77,7 @@ class BaseScraper(object):
 
     """
 
-    currency = u'€'
+    currency = '€'
     query = ""
     METHOD = 'GET'
 
@@ -86,15 +86,15 @@ class BaseScraper(object):
         """
         self.SOURCE_NAME = "name"
         #: Base url of the website
-        self.SOURCE_URL_BASE = u"http//url-base"
+        self.SOURCE_URL_BASE = "http//url-base"
         #: GET or POST?
         #: Url to which we just have to add url parameters to run the search
-        self.SOURCE_URL_SEARCH = u"url-search"
+        self.SOURCE_URL_SEARCH = "url-search"
         #: Advanced search url
-        self.SOURCE_URL_ADVANCED_SEARCH = u""
+        self.SOURCE_URL_ADVANCED_SEARCH = ""
         #: The url to search for an isbn (can be the advanced or the simple one).
         self.SOURCE_URL_ISBN_SEARCH = self.SOURCE_URL_SEARCH
-        self.ERR_OUTOFSTOCK = u"product out of stock"
+        self.ERR_OUTOFSTOCK = "product out of stock"
         self.TYPE_BOOK = "book"
         self.TYPE_DVD = "dvd"
         # there is no comic type.
@@ -106,7 +106,7 @@ class BaseScraper(object):
         #: Query parameter to filter on the publisher
         self.PUBLISHER_QPARAM = ""
         #: Number of results to display
-        self.NBR_RESULTS_QPARAM = u""
+        self.NBR_RESULTS_QPARAM = ""
         self.NBR_RESULTS = 24  # 12 by default
 
     def __init__(self, *args, **kwargs):
@@ -142,14 +142,14 @@ class BaseScraper(object):
         self.page = 1
         isbns = []
         if not args and not kwargs:
-            print 'Error: give args to the query'
+            print('Error: give args to the query')
 
         # headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.65 Safari/537.36',
 
         # Get the search terms that are isbn
         # (we only search for one atm)
         if args:
-            isbns = filter(is_isbn, args)
+            isbns = list(filter(is_isbn, args))
 
         # Get the search keywords without isbns
         words = list(set(args) - set(isbns))
@@ -168,7 +168,7 @@ class BaseScraper(object):
             # Build url with the remaining query parameters.
             self.url = self.SOURCE_URL_SEARCH  # ready to add query+args+parameters
             q = ""
-            for k, v in kwargs.iteritems():
+            for k, v in list(kwargs.items()):
                 urlend = "+".join(val for val in v)
                 q += "&%s=%s" % (k, urlend)
 
@@ -181,7 +181,7 @@ class BaseScraper(object):
             if isbns:
                 # Some sites use query parameters to set the isbn,
                 # others treat it like a normal one (casa del libro).
-                if self.ISBN_QPARAM not in ["", u""]:
+                if self.ISBN_QPARAM not in ["", ""]:
                     self.query = "&{}={}".format(self.ISBN_QPARAM, isbns[0])
                 else:
                     # XXX: we could search for many isbns at once.
@@ -219,7 +219,7 @@ class BaseScraper(object):
 
         Return: a str, the necessary url part to add at the end.
         """
-        page_qparam = u""
+        page_qparam = ""
         return page_qparam
 
     def _product_list(self):
