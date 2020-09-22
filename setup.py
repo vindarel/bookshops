@@ -33,7 +33,7 @@ setup(
         "unidecode",  # string clean up
         "distance",  # between two strings
         "clize==3",  # quick and easy cli args
-        "pyyaml==3.11",
+        "pyyaml==5.1",
         "tqdm",      # progress bar
         "termcolor",  # terminal color
         "six",
