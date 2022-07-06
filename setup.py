@@ -22,7 +22,7 @@ setup(
         "requests==2.21",
         "beautifulsoup4",
         "isbnlib<4",  # useful tools to manipulate and get isbn
-        "lxml==3.5",  # parsing
+        "lxml==4.9.1",  # parsing
         # "html5lib==1.0b8",  # parsing.
         # WARN: newer version breaks bs4.
         # see https://bugs.launchpad.net/beautifulsoup/+bug/1603299
